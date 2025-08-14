@@ -84,15 +84,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
             ))}
           </div>
 
-          <motion.div 
-            className="text-center mt-12"
-            variants={itemVariants}
-          >
-            <p className="text-gray-600 mb-6">Don't see your city?</p>
-            <button className="bg-gradient-to-r from-blue-600 to-teal-600 text-white px-8 py-4 rounded-xl font-semibold hover:shadow-lg transition-all duration-300 transform hover:scale-105">
-              Request New Location
-            </button>
-          </motion.div>
+          
         </motion.div>
       </div>
     </section>

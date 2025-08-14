@@ -5,7 +5,15 @@ import Image from 'next/image';
 import { HiStar } from 'react-icons/hi';
 import type { Review } from '@/lib/types';
 
+import { useState } from "react";
+import { HiPlus } from "react-icons/hi";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
 const Reviews = ({ reviews }: { reviews: Review[] }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [allReviews, setAllReviews] = useState(reviews);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -56,8 +64,18 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
             </p>
           </motion.div>
 
+          <motion.div variants={itemVariants} className="text-center mb-12">
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors"
+            >
+              <HiPlus className="h-5 w-5" />
+              Add a Review
+            </button>
+          </motion.div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {reviews.map((review, index) => (
+            {allReviews.map((review, index) => (
               <motion.div
                 key={review.id}
                 variants={itemVariants}
@@ -114,6 +132,26 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
               <span>4.9/5 rating from 10,000+ customers</span>
             </div>
           </motion.div>
+
+          {isModalOpen && (
+            <AddReviewModal
+              onClose={() => setIsModalOpen(false)}
+              onSave={async (payload) => {
+                const res = await fetch('/api/reviews', {
+                  method: 'POST',
+                  headers: { 'Content-Type': 'application/json' },
+                  body: JSON.stringify(payload),
+                });
+                if (!res.ok) {
+                  alert("Failed to submit review.");
+                  return;
+                }
+                const newReview: Review = await res.json();
+                setAllReviews((prev) => [newReview, ...prev]);
+                setIsModalOpen(false);
+              }}
+            />
+          )}
         </motion.div>
       </div>
     </section>
@@ -121,3 +159,112 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
 };
 
 export default Reviews;
+
+const reviewSchema = z.object({
+  name: z.string().min(2, "Name is required"),
+  service: z.string().min(1, "Service name is required"),
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(10, "Comment must be at least 10 characters"),
+  avatar: z.string().url("Invalid URL").optional().or(z.literal("")),
+});
+
+type ReviewFormData = z.infer<typeof reviewSchema>;
+
+function AddReviewModal({
+  onClose,
+  onSave,
+}: {
+  onClose: () => void;
+  onSave: (payload: Omit<ReviewFormData, "service"> & { service: string }) => Promise<void>;
+}) {
+  const { register, handleSubmit, formState: { errors } } = useForm<ReviewFormData>({
+    resolver: zodResolver(reviewSchema),
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const onSubmit = async (data: ReviewFormData) => {
+    setIsSubmitting(true);
+    await onSave(data);
+    setIsSubmitting(false);
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+      <div className="bg-white rounded-lg shadow-xl p-6 w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Add Your Review</h2>
+        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <div>
+            <label htmlFor="reviewName" className="block text-sm font-medium text-gray-700">Your Name</label>
+            <input
+              type="text"
+              id="reviewName"
+              {...register("name")}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            />
+            {errors.name && <p className="text-red-500 text-sm mt-1">{errors.name.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="reviewService" className="block text-sm font-medium text-gray-700">Service Name</label>
+            <input
+              type="text"
+              id="reviewService"
+              {...register("service")}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            />
+            {errors.service && <p className="text-red-500 text-sm mt-1">{errors.service.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="reviewRating" className="block text-sm font-medium text-gray-700">Rating</label>
+            <select
+              id="reviewRating"
+              {...register("rating", { valueAsNumber: true })}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            >
+              {[5, 4, 3, 2, 1].map((num) => (
+                <option key={num} value={num}>{num} Stars</option>
+              ))}
+            </select>
+            {errors.rating && <p className="text-red-500 text-sm mt-1">{errors.rating.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="reviewComment" className="block text-sm font-medium text-gray-700">Comment</label>
+            <textarea
+              id="reviewComment"
+              {...register("comment")}
+              rows={4}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+            ></textarea>
+            {errors.comment && <p className="text-red-500 text-sm mt-1">{errors.comment.message}</p>}
+          </div>
+          <div>
+            <label htmlFor="reviewAvatar" className="block text-sm font-medium text-gray-700">Avatar URL (Optional)</label>
+            <input
+              type="url"
+              id="reviewAvatar"
+              {...register("avatar")}
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
+              placeholder="e.g., https://example.com/your-avatar.jpg"
+            />
+            {errors.avatar && <p className="text-red-500 text-sm mt-1">{errors.avatar.message}</p>}
+          </div>
+          <div className="flex justify-end space-x-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="px-4 py-2 text-gray-700 border border-gray-300 rounded-md hover:bg-gray-100"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 disabled:opacity-50"
+            >
+              {isSubmitting ? "Submitting..." : "Submit Review"}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

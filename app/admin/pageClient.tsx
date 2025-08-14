@@ -32,6 +32,31 @@ export default function AdminPageClient() {
     void refreshAll();
   }, []);
 
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchLatestOrders = async () => {
+      try {
+        const res = await fetch('/api/orders', { cache: 'no-store' });
+        const data = await res.json();
+        if (!isCancelled && Array.isArray(data)) setOrders(data);
+      } catch {}
+    };
+    fetchLatestOrders();
+
+    const onFocus = () => void fetchLatestOrders();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void fetchLatestOrders();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+
+    return () => {
+      isCancelled = true;
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
+
   async function refreshAll() {
     const [services, categories, locations, orders] = await Promise.all([
       fetch('/api/services').then((r) => r.json()),
@@ -45,7 +70,7 @@ export default function AdminPageClient() {
     setOrders(orders ?? []);
   }
 
-  async function handleStatusChange(orderId: number, newStatus: Order['status']) {
+  async function handleStatusChange(orderId: string, newStatus: Order['status']) {
     const order = orders.find((o) => o.id === orderId);
     if (!order) return;
     const res = await fetch('/api/orders', {
@@ -114,19 +139,30 @@ export default function AdminPageClient() {
 
   async function handleAddLocation(form: Partial<Location>) {
     setIsSaving(true);
-    const res = await fetch('/api/locations', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-    setIsSaving(false);
-    if (!res.ok) return;
-    const created = await res.json();
-    setLocations((prev) => [created, ...prev]);
-    setIsAddLocationOpen(false);
+    try {
+      const res = await fetch('/api/locations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      setIsSaving(false);
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Location creation failed:', errorData);
+        alert(`Failed to add location: ${errorData.error || 'Unknown error'}`);
+        return;
+      }
+      const created = await res.json();
+      setLocations((prev) => [created, ...prev]);
+      setIsAddLocationOpen(false);
+    } catch (error) {
+      setIsSaving(false);
+      console.error('Location creation error:', error);
+      alert('Failed to add location. Please try again.');
+    }
   }
 
-  async function handleDeleteLocation(locationId: number) {
+  async function handleDeleteLocation(locationId: string) {
     const res = await fetch('/api/locations', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -261,7 +297,15 @@ export default function AdminPageClient() {
               <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-gray-900">All Orders</h2>
-                  <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">Export Orders</button>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={refreshAll}
+                      className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                    >
+                      Refresh
+                    </button>
+                    <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">Export Orders</button>
+                  </div>
                 </div>
 
                 <div className="overflow-x-auto">
@@ -708,7 +752,8 @@ function AddLocationModal({
             onClick={async () => {
               let imageUrl = image;
               if (imageFile) imageUrl = await uploadSelected(imageFile, 'locations');
-              await onSave({ name, city, area, image: imageUrl } as Partial<Location>);
+              const newId = crypto.randomUUID(); // Generate UUID
+              await onSave({ id: newId, name, city, area, image: imageUrl } as Partial<Location>);
             }}
             className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
           >

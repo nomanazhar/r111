@@ -18,10 +18,10 @@ export interface Category {
 }
 
 export interface Location {
-  id: number;
+  id: string;
   name: string;
   city: string;
-  area?: string | null;
+  area: string;
   image: string;
 }
 
@@ -36,7 +36,7 @@ export interface Review {
 }
 
 export interface Order {
-  id: number;
+  id: string; // uuid in database
   userId: string;
   serviceId: string; // stored as text; we stringify numeric IDs when saving
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
@@ -46,7 +46,7 @@ export interface Order {
   date: string;
   time: string;
   total: number;
-  createdAt?: string; // DB returns created_at
+  created_at?: string; // DB returns created_at
 }
 
 

@@ -10,7 +10,7 @@ import { z } from 'zod';
 import { HiArrowLeft, HiStar, HiClock, HiLocationMarker, HiCalendar } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import type { Service, Review } from '@/lib/types';
+import type { Service, Review, Order } from '@/lib/types';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -19,10 +19,6 @@ const bookingSchema = z.object({
   date: z.string().min(1, 'Date is required'),
   time: z.string().min(1, 'Time is required'),
   specialRequests: z.string().optional(),
-  cardNumber: z.string().min(16, 'Card number must be 16 digits'),
-  expiryDate: z.string().min(5, 'Expiry date is required'),
-  cvv: z.string().min(3, 'CVV must be 3 digits'),
-  nameOnCard: z.string().min(2, 'Name on card is required'),
 });
 
 type BookingFormData = z.infer<typeof bookingSchema>;
@@ -31,6 +27,7 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
   const [isBooking, setIsBooking] = useState(false);
   const [isSubmittingReview, setIsSubmittingReview] = useState(false);
   const [allReviews, setAllReviews] = useState<Review[]>(reviews);
+  const [bookedOrder, setBookedOrder] = useState<Order | null>(null); // New state for booked order
 
   const {
     register,
@@ -54,31 +51,55 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
   }
 
   const onSubmit = async (data: BookingFormData) => {
+    console.log('Form submitted with data:', data);
     setIsBooking(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    const newOrder = {
-      userId: 'user-' + Date.now(),
-      serviceId: String(service.id),
-      status: 'pending' as const,
-      customerName: data.name,
-      phone: data.phone,
-      address: data.address,
-      date: data.date,
-      time: data.time,
-      total: service.price,
-    };
-    const res = await fetch('/api/orders', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(newOrder),
-    });
-    if (!res.ok) {
+    
+    try {
+      // Simulate processing time
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      
+      const newOrder = {
+        userId: 'user-' + Date.now(),
+        serviceId: String(service.id),
+        status: 'pending' as const,
+        customerName: data.name,
+        phone: data.phone,
+        address: data.address,
+        date: data.date,
+        time: data.time,
+        total: service.price,
+      };
+      
+      console.log('Sending order to API:', newOrder);
+      
+      const res = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newOrder),
+      });
+      
+      console.log('API response status:', res.status);
+      
+      if (!res.ok) {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        console.error('Order creation failed:', errorData);
+        setIsBooking(false);
+        alert(`Failed to place order: ${errorData.error || 'Please try again.'}`);
+        return;
+      }
+      
+      const createdOrder: Order = await res.json();
+      console.log('Created order:', createdOrder);
+      
       setIsBooking(false);
-      alert('Failed to place order. Please try again.');
-      return;
+      setBookedOrder(createdOrder);
+      alert('Booking confirmed! You will receive a confirmation email shortly.');
+      
+    } catch (error) {
+      console.error('Booking error:', error);
+      setIsBooking(false);
+      alert('Failed to place order. Please check your connection and try again.');
     }
-    setIsBooking(false);
-    alert('Booking confirmed! You will receive a confirmation email shortly.');
   };
 
   const containerVariants = {
@@ -117,11 +138,11 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
               <div className="lg:col-span-2">
-                <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg overflow-hidden mb-8">
-                  <div className="relative h-96">
+                <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg overflow-hidden mb-4">
+                  <div className="relative h-48">
                     <Image src={service.image} alt={service.name} fill className="object-cover" />
                   </div>
-                  <div className="p-8">
+                  <div className="p-2">
                     <h1 className="text-3xl font-bold text-gray-900 mb-4">{service.name}</h1>
                     <p className="text-gray-600 text-lg leading-relaxed mb-6">{service.description}</p>
 
@@ -201,31 +222,7 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
                       </div>
                     </div>
 
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-4">Payment Information</h3>
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Card Number</label>
-                          <input {...register('cardNumber')} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="1234 5678 9012 3456" maxLength={19} />
-                          {errors.cardNumber && <p className="text-red-500 text-sm mt-1">{errors.cardNumber.message}</p>}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Expiry Date</label>
-                          <input {...register('expiryDate')} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="MM/YY" maxLength={5} />
-                          {errors.expiryDate && <p className="text-red-500 text-sm mt-1">{errors.expiryDate.message}</p>}
-                        </div>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-700 mb-2">CVV</label>
-                          <input {...register('cvv')} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="123" maxLength={3} />
-                          {errors.cvv && <p className="text-red-500 text-sm mt-1">{errors.cvv.message}</p>}
-                        </div>
-                        <div className="md:col-span-2">
-                          <label className="block text-sm font-medium text-gray-700 mb-2">Name on Card</label>
-                          <input {...register('nameOnCard')} className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent" placeholder="Enter name as on card" />
-                          {errors.nameOnCard && <p className="text-red-500 text-sm mt-1">{errors.nameOnCard.message}</p>}
-                        </div>
-                      </div>
-                    </div>
+                    
 
                     <button type="submit" disabled={isBooking} className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-4 rounded-lg font-semibold text-lg transition-colors">
                       {isBooking ? 'Processing...' : `Book Now - $${service.price}`}
@@ -251,24 +248,6 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
                       ))}
                     </div>
                   )}
-
-                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Add a Review</h3>
-                  <ReviewForm
-                    serviceName={service.name}
-                    isSubmitting={isSubmittingReview}
-                    onSubmit={async (payload) => {
-                      setIsSubmittingReview(true);
-                      const res = await fetch('/api/reviews', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(payload),
-                      });
-                      setIsSubmittingReview(false);
-                      if (!res.ok) return;
-                      const created: Review = await res.json();
-                      setAllReviews((prev) => [created, ...prev]);
-                    }}
-                  />
                 </motion.div>
               </div>
 
@@ -292,6 +271,32 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
                         <span className="font-medium">{service.rating}</span>
                       </div>
                     </div>
+                    {bookedOrder && (
+                      <>
+                        <hr className="my-2" />
+                        <h4 className="text-md font-semibold text-gray-800 mt-4 mb-2">Customer Details</h4>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Name</span>
+                          <span className="font-medium">{bookedOrder.customerName}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Phone</span>
+                          <span className="font-medium">{bookedOrder.phone}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Address</span>
+                          <span className="font-medium text-right max-w-[60%] break-words">{bookedOrder.address}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Date</span>
+                          <span className="font-medium">{bookedOrder.date}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span className="text-gray-600">Time</span>
+                          <span className="font-medium">{bookedOrder.time}</span>
+                        </div>
+                      </>
+                    )}
                     <hr />
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
@@ -317,58 +322,6 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
       </div>
 
       <Footer />
-    </div>
-  );
-}
-
-
-function ReviewForm({
-  serviceName,
-  isSubmitting,
-  onSubmit,
-}: {
-  serviceName: string;
-  isSubmitting: boolean;
-  onSubmit: (payload: { name: string; service: string; rating: number; comment: string; avatar?: string }) => Promise<void>;
-}) {
-  const [name, setName] = useState('');
-  const [rating, setRating] = useState(5);
-  const [comment, setComment] = useState('');
-  const [avatar, setAvatar] = useState('');
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
-          <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
-          <select value={rating} onChange={(e) => setRating(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg">
-            {[5,4,3,2,1].map((r) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
-        </div>
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Avatar URL (optional)</label>
-        <input value={avatar} onChange={(e) => setAvatar(e.target.value)} className="w-full px-3 py-2 border rounded-lg" placeholder="https://..." />
-      </div>
-      <div>
-        <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
-        <textarea value={comment} onChange={(e) => setComment(e.target.value)} className="w-full px-3 py-2 border rounded-lg" rows={3} />
-      </div>
-      <div className="flex justify-end">
-        <button
-          disabled={isSubmitting}
-          onClick={() => onSubmit({ name, service: serviceName, rating, comment, avatar })}
-          className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
-        >
-          {isSubmitting ? 'Submitting...' : 'Submit Review'}
-        </button>
-      </div>
     </div>
   );
 }

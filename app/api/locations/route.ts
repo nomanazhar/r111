@@ -8,10 +8,35 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  const body = await request.json();
-  const { data, error } = await supabase.from('locations').insert(body).select('*').single();
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json(data, { status: 201 });
+  try {
+    const body = await request.json();
+
+    // Validate required fields
+    const name = String(body?.name || '').trim();
+    const city = String(body?.city || '').trim();
+    const area = String(body?.area || '').trim();
+    const image = String(body?.image || '').trim();
+    const id = String(body?.id || '').trim(); // Get ID from body
+
+    if (!name || !city || !area || !image || !id) {
+      return NextResponse.json({ error: 'Missing required fields: id, name, city, area, and image are required' }, { status: 400 });
+    }
+
+    const { data, error } = await supabase
+      .from('locations')
+      .insert({ id, name, city, area, image }) // Include id in insert payload
+      .select('*')
+      .single();
+
+    if (error) {
+      console.error('POST /api/locations insert error:', error.message);
+      return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+    return NextResponse.json(data, { status: 201 });
+  } catch (e: any) {
+    console.error('POST /api/locations unexpected error:', e?.message || e);
+    return NextResponse.json({ error: e?.message || 'Unexpected error' }, { status: 500 });
+  }
 }
 
 export async function PATCH(request: Request) {
