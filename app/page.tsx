@@ -9,6 +9,8 @@ import Footer from '@/components/layout/Footer';
 import { supabase } from '@/lib/supabaseClient';
 import type { Category, Service, Location, Review } from '@/lib/types';
 
+export const revalidate = 0;
+
 export default async function Home() {
   const [{ data: categories }, { data: services }, { data: locations }, { data: reviews }] = await Promise.all([
     supabase.from('categories').select('*').order('id'),

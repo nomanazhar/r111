@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -7,6 +8,42 @@ import { HiStar, HiClock, HiArrowRight } from 'react-icons/hi';
 import type { Service, Category } from '@/lib/types';
 
 const Services = ({ services, categories }: { services: Service[]; categories: Category[] }) => {
+  const [liveServices, setLiveServices] = useState<Service[]>(services);
+  const [liveCategories, setLiveCategories] = useState<Category[]>(categories);
+
+  useEffect(() => {
+    setLiveServices(services);
+  }, [services]);
+  useEffect(() => {
+    setLiveCategories(categories);
+  }, [categories]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchLatest = async () => {
+      try {
+        const [s, c] = await Promise.all([
+          fetch('/api/services', { cache: 'no-store' }).then((r) => r.json()),
+          fetch('/api/categories', { cache: 'no-store' }).then((r) => r.json()),
+        ]);
+        if (!isCancelled && Array.isArray(s)) setLiveServices(s);
+        if (!isCancelled && Array.isArray(c)) setLiveCategories(c);
+      } catch {}
+    };
+    void fetchLatest();
+
+    const onFocus = () => void fetchLatest();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void fetchLatest();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      isCancelled = true;
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -28,7 +65,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
   };
 
   const getServicesByCategory = (categorySlug: string) => {
-    return services.filter(service => service.category === categorySlug);
+    return liveServices.filter(service => service.category === categorySlug);
   };
 
   return (
@@ -50,7 +87,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
         </motion.div>
 
         <div className="space-y-2">
-          {categories.slice(0, 3).map((category) => {
+          {liveCategories.slice(0, 3).map((category) => {
             const categoryServices = getServicesByCategory(category.slug);
             
             if (categoryServices.length === 0) return null;

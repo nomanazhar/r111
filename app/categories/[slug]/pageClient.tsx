@@ -67,11 +67,7 @@ export default function CategoryPageClient({
               </Link>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="flex justify-center mb-8">
-              <div className="text-8xl bg-white/10 backdrop-blur-sm rounded-full w-32 h-32 flex items-center justify-center">
-                {category.icon}
-              </div>
-            </motion.div>
+            {/* Removed icon display as per new schema */}
 
             <motion.h1 variants={itemVariants} className="text-4xl md:text-6xl font-bold text-white mb-6">
               {category.name}

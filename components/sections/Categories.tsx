@@ -1,11 +1,41 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import type { Category } from '@/lib/types';
 
 const Categories = ({ categories }: { categories: Category[] }) => {
+  const [liveCategories, setLiveCategories] = useState<Category[]>(categories);
+
+  useEffect(() => {
+    setLiveCategories(categories);
+  }, [categories]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const fetchLatest = async () => {
+      try {
+        const res = await fetch('/api/categories', { cache: 'no-store' });
+        const data = await res.json();
+        if (!isCancelled && Array.isArray(data)) setLiveCategories(data);
+      } catch {}
+    };
+    void fetchLatest();
+
+    const onFocus = () => void fetchLatest();
+    const onVisibility = () => {
+      if (document.visibilityState === 'visible') void fetchLatest();
+    };
+    window.addEventListener('focus', onFocus);
+    document.addEventListener('visibilitychange', onVisibility);
+    return () => {
+      isCancelled = true;
+      window.removeEventListener('focus', onFocus);
+      document.removeEventListener('visibilitychange', onVisibility);
+    };
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -59,7 +89,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
           variants={containerVariants}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {categories.map((category, index) => (
+          {liveCategories.map((category, index) => (
             <motion.div
               key={category.id}
               variants={itemVariants}
@@ -80,9 +110,6 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                    <div className="absolute top-4 right-4 text-3xl bg-white/90 backdrop-blur-sm rounded-full w-14 h-14 flex items-center justify-center">
-                      {category.icon}
-                    </div>
                   </div>
                   <div className="p-4">
                     <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">

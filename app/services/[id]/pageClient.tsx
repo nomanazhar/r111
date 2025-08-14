@@ -10,8 +10,7 @@ import { z } from 'zod';
 import { HiArrowLeft, HiStar, HiClock, HiLocationMarker, HiCalendar } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
-import { useStore } from '@/lib/store';
-import type { Service } from '@/lib/data';
+import type { Service, Review } from '@/lib/types';
 
 const bookingSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -28,9 +27,10 @@ const bookingSchema = z.object({
 
 type BookingFormData = z.infer<typeof bookingSchema>;
 
-export default function ServicePageClient({ service }: { service?: Service }) {
-  const { addOrder } = useStore();
+export default function ServicePageClient({ service, reviews = [] }: { service?: Service; reviews?: Review[] }) {
   const [isBooking, setIsBooking] = useState(false);
+  const [isSubmittingReview, setIsSubmittingReview] = useState(false);
+  const [allReviews, setAllReviews] = useState<Review[]>(reviews);
 
   const {
     register,
@@ -58,7 +58,7 @@ export default function ServicePageClient({ service }: { service?: Service }) {
     await new Promise((resolve) => setTimeout(resolve, 2000));
     const newOrder = {
       userId: 'user-' + Date.now(),
-      serviceId: service.id,
+      serviceId: String(service.id),
       status: 'pending' as const,
       customerName: data.name,
       phone: data.phone,
@@ -232,6 +232,44 @@ export default function ServicePageClient({ service }: { service?: Service }) {
                     </button>
                   </form>
                 </motion.div>
+
+                <motion.div variants={itemVariants} className="bg-white rounded-2xl shadow-lg p-8 mt-8">
+                  <h2 className="text-2xl font-bold text-gray-900 mb-6">Customer Reviews</h2>
+                  {allReviews.length === 0 ? (
+                    <p className="text-gray-600 mb-6">No reviews yet. Be the first to review this service.</p>
+                  ) : (
+                    <div className="space-y-4 mb-8">
+                      {allReviews.map((r) => (
+                        <div key={r.id} className="border rounded-lg p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="font-semibold">{r.name}</div>
+                            <div className="text-yellow-500">{'★'.repeat(Math.round(r.rating))}{'☆'.repeat(5 - Math.round(r.rating))}</div>
+                          </div>
+                          <div className="text-sm text-gray-500">{new Date(r.date).toLocaleDateString()}</div>
+                          <p className="mt-2 text-gray-700">{r.comment}</p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+
+                  <h3 className="text-xl font-semibold text-gray-900 mb-4">Add a Review</h3>
+                  <ReviewForm
+                    serviceName={service.name}
+                    isSubmitting={isSubmittingReview}
+                    onSubmit={async (payload) => {
+                      setIsSubmittingReview(true);
+                      const res = await fetch('/api/reviews', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload),
+                      });
+                      setIsSubmittingReview(false);
+                      if (!res.ok) return;
+                      const created: Review = await res.json();
+                      setAllReviews((prev) => [created, ...prev]);
+                    }}
+                  />
+                </motion.div>
               </div>
 
               <div className="lg:col-span-1">
@@ -283,4 +321,55 @@ export default function ServicePageClient({ service }: { service?: Service }) {
   );
 }
 
+
+function ReviewForm({
+  serviceName,
+  isSubmitting,
+  onSubmit,
+}: {
+  serviceName: string;
+  isSubmitting: boolean;
+  onSubmit: (payload: { name: string; service: string; rating: number; comment: string; avatar?: string }) => Promise<void>;
+}) {
+  const [name, setName] = useState('');
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [avatar, setAvatar] = useState('');
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Your Name</label>
+          <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+          <select value={rating} onChange={(e) => setRating(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg">
+            {[5,4,3,2,1].map((r) => (
+              <option key={r} value={r}>{r}</option>
+            ))}
+          </select>
+        </div>
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Avatar URL (optional)</label>
+        <input value={avatar} onChange={(e) => setAvatar(e.target.value)} className="w-full px-3 py-2 border rounded-lg" placeholder="https://..." />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Comment</label>
+        <textarea value={comment} onChange={(e) => setComment(e.target.value)} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+      </div>
+      <div className="flex justify-end">
+        <button
+          disabled={isSubmitting}
+          onClick={() => onSubmit({ name, service: serviceName, rating, comment, avatar })}
+          className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
+        >
+          {isSubmitting ? 'Submitting...' : 'Submit Review'}
+        </button>
+      </div>
+    </div>
+  );
+}
 

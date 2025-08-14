@@ -70,7 +70,11 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
                 <div className="flex items-center gap-3 mb-4">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden">
                     <Image
-                      src={review.avatar}
+                      src={
+                        review.avatar && review.avatar.length > 0
+                          ? review.avatar
+                          : 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><rect width="100%" height="100%" fill="%23e5e7eb"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="16" fill="%236b7280">👤</text></svg>'
+                      }
                       alt={review.name}
                       fill
                       className="object-cover"

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabaseClient';
+import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
 
 export async function GET() {
   const { data, error } = await supabase.from('orders').select('*').order('created_at', { ascending: false });
@@ -20,6 +20,15 @@ export async function PATCH(request: Request) {
   const { data, error } = await supabase.from('orders').update(updates).eq('id', id).select('*').single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
+}
+
+export async function DELETE(request: Request) {
+  const body = await request.json();
+  const { id } = body;
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
+  const { error } = await supabase.from('orders').delete().eq('id', id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ success: true });
 }
 
 
