@@ -37,8 +37,8 @@ export interface Review {
 
 export interface Order {
   id: string; // uuid in database
-  userId: string;
-  serviceId: string; // stored as text; we stringify numeric IDs when saving
+  userid: string;       // Changed from userId
+  serviceid: string;    // Changed from serviceId
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   customerName: string;
   phone: string;

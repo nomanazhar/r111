@@ -103,9 +103,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
                   <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                    <div className="text-4xl bg-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
-                      {category.icon}
-                    </div>
+                    
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900">{category.name}</h3>
                       <p className="text-gray-600">{category.description}</p>
