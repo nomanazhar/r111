@@ -434,35 +434,37 @@ export default function AdminPageClient() {
               </motion.div>
             )}
 
-            {activeTab === 'locations' && (
-              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
-                <div className="flex justify-between items-center mb-6">
-                  <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
-                  <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
-                    <HiPlus className="h-5 w-5" />
-                    Add Location
-                  </button>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {locations.map((l) => (
-                    <div key={l.id} className="border border-gray-200 rounded-lg p-4">
-                      {l.image && (
-                        <div className="mb-2">
-                          <img src={l.image} alt={l.name} className="w-full h-28 object-cover rounded" />
+              {activeTab === 'locations' && (
+                <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
+                  <div className="flex justify-between items-center mb-6">
+                    <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
+                    <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
+                      <HiPlus className="h-5 w-5" />
+                      Add Location
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {locations.map((l) => (
+                      <div key={l.id} className="border border-gray-200 rounded-lg p-4">
+                        {l.image && (
+                          <div className="mb-2">
+                            <img src={l.image} alt={l.name} className="w-full h-28 object-cover rounded" />
+                          </div>
+                        )}
+                        <h4 className="font-bold text-gray-900">{l.name}</h4>
+                        <p className="text-gray-600 text-sm">{l.area ? `${l.area}, ` : ''}{l.city}</p>
+                        <div className="flex justify-end mt-3">
+                          <button onClick={() => handleDeleteLocation(l.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                            <HiTrash className="inline h-4 w-4 mr-1" />Delete
+                          </button>
                         </div>
-                      )}
-                      <h4 className="font-bold text-gray-900">{l.name}</h4>
-                      <p className="text-gray-600 text-sm">{l.area ? `${l.area}, ` : ''}{l.city}</p>
-                      <div className="flex justify-end mt-3">
-                        <button onClick={() => handleDeleteLocation(l.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
-                          <HiTrash className="inline h-4 w-4 mr-1" />Delete
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              </motion.div>
-            )}
+                    ))}
+                  </div>
+                </motion.div>
+              )}
+           
+            
 
             {isAddServiceOpen && (
               <AddServiceModal
