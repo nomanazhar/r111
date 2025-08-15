@@ -75,7 +75,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
           <motion.div variants={itemVariants} className="text-center mb-12">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors hidden"
             >
               <HiPlus className="h-5 w-5" />
               Add a Review
