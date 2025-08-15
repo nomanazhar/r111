@@ -435,7 +435,7 @@ export default function AdminPageClient() {
             )}
 
             {activeTab === 'locations' && (
-              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
+              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
                   <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
