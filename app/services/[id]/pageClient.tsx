@@ -83,6 +83,7 @@ export default function ServiceDetailPage() {
         serviceid: String(service.id),
         status: 'pending' as const,
         customer_name: data.name,
+        email: data.email,
         phone: data.phone,
         address: data.address,
         date: data.date,

@@ -3,6 +3,11 @@ import { supabase } from '@/lib/supabaseClient';
 import type { Service, Review } from '@/lib/types';
 
 export default async function ServicePage({ params }: { params: { id: string } }) {
+  if (!supabase) {
+    const Client = ServicePageClient as unknown as (props: { service?: Service; reviews?: Review[] }) => JSX.Element;
+    return <Client service={undefined} reviews={[]} />;
+  }
+
   const { data } = await supabase.from('services').select('*').eq('id', params.id).limit(1);
   const service = (data as Service[] | null)?.[0];
   let reviews: Review[] = [];

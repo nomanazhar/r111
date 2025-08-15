@@ -1,8 +1,12 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function GET() {
-  const { data, error } = await supabase
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
+  const { data, error } = await supabaseAdmin
     .from('categories')
     .select('*')
     .order('id');
@@ -11,17 +15,25 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
-  const { data, error } = await supabase.from('categories').insert(body).select('*').single();
+  const { data, error } = await supabaseAdmin.from('categories').insert(body).select('*').single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data, { status: 201 });
 }
 
 export async function PATCH(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('categories')
     .update(updates)
     .eq('id', id)
@@ -32,10 +44,14 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { error } = await supabase.from('categories').delete().eq('id', id);
+  const { error } = await supabaseAdmin.from('categories').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }

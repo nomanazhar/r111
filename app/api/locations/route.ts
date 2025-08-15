@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function GET() {
-  const { data, error } = await supabase.from('locations').select('*').order('id');
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+  
+  const { data, error } = await supabaseAdmin.from('locations').select('*').order('id');
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+    }
+
     const body = await request.json();
 
     // Validate required fields
@@ -22,7 +30,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required fields: id, name, city, area, and image are required' }, { status: 400 });
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseAdmin
       .from('locations')
       .insert({ id, name, city, area, image }) // Include id in insert payload
       .select('*')
@@ -40,10 +48,14 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('locations')
     .update(updates)
     .eq('id', id)
@@ -54,10 +66,14 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { error } = await supabase.from('locations').delete().eq('id', id);
+  const { error } = await supabaseAdmin.from('locations').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }

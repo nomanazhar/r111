@@ -1,14 +1,22 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export async function GET() {
-  const { data, error } = await supabase.from('reviews').select('*').order('id');
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
+  const { data, error } = await supabaseAdmin.from('reviews').select('*').order('id');
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }
 
 export async function POST(request: Request) {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+    }
+
     const body = await request.json();
     console.log('Received review data:', body);
 
@@ -31,7 +39,7 @@ export async function POST(request: Request) {
 
     const insertPayload = { id, name, service, rating, comment, date, avatar: avatar || null }; // Ensure avatar is null if empty string
 
-    const { data, error } = await supabase.from('reviews').insert(insertPayload).select('*').single();
+    const { data, error } = await supabaseAdmin.from('reviews').insert(insertPayload).select('*').single();
 
     if (error) {
       console.error('Supabase insert review error:', error);
@@ -47,10 +55,14 @@ export async function POST(request: Request) {
 }
 
 export async function PATCH(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id, ...updates } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { data, error } = await supabase
+  const { data, error } = await supabaseAdmin
     .from('reviews')
     .update(updates)
     .eq('id', id)
@@ -61,10 +73,14 @@ export async function PATCH(request: Request) {
 }
 
 export async function DELETE(request: Request) {
+  if (!supabaseAdmin) {
+    return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+  }
+
   const body = await request.json();
   const { id } = body;
   if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 });
-  const { error } = await supabase.from('reviews').delete().eq('id', id);
+  const { error } = await supabaseAdmin.from('reviews').delete().eq('id', id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ success: true });
 }

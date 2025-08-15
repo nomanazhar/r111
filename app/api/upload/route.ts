@@ -1,10 +1,14 @@
 import { NextResponse } from 'next/server';
-import { supabaseAdmin as supabase } from '@/lib/supabaseAdmin';
+import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
 export const runtime = 'nodejs';
 
 export async function POST(request: Request) {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
+    }
+
     const formData = await request.formData();
     const file = formData.get('file');
     const folder = (formData.get('folder') as string) || '';
@@ -21,13 +25,13 @@ export async function POST(request: Request) {
     const bytes = await uploadedFile.arrayBuffer();
     const buffer = Buffer.from(bytes);
     const bucket = 'PUBLIC';
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from(bucket)
       .upload(path, buffer, { contentType: uploadedFile.type || 'application/octet-stream', upsert: false });
     if (uploadError) {
       return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
-    const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+    const { data } = supabaseAdmin.storage.from(bucket).getPublicUrl(path);
     return NextResponse.json({ url: data.publicUrl, path });
   } catch (e: any) {
     console.error('Upload error:', e);

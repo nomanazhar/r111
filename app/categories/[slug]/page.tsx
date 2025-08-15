@@ -3,6 +3,10 @@ import { supabase } from '@/lib/supabaseClient';
 import type { Category, Service, Location } from '@/lib/types';
 
 export default async function CategoryPage({ params }: { params: { slug: string } }) {
+  if (!supabase) {
+    return <CategoryPageClient category={undefined} services={[]} locations={[]} />;
+  }
+
   const [
     { data: categories },
     { data: services },

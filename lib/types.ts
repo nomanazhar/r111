@@ -41,6 +41,7 @@ export interface Order {
   serviceid: string;    // Corrected to lowercase serviceid
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   customer_name: string; // Corrected to snake_case customer_name
+  email: string;        // Customer email for notifications
   phone: string;
   address: string;
   date: string;
