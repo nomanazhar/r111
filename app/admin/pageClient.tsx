@@ -266,7 +266,7 @@ export default function AdminPageClient() {
                         {orders.slice(0, 5).map((order) => (
                           <tr key={order.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.customer_name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceId)?.name || 'Unknown Service'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.date}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
@@ -331,7 +331,7 @@ export default function AdminPageClient() {
                               <div className="text-sm text-gray-500">{order.phone}</div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceId)?.name || 'Unknown Service'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{order.date}</div>
                             <div className="text-sm text-gray-500">{order.time}</div>
@@ -340,7 +340,7 @@ export default function AdminPageClient() {
                             <select
                               value={order.status}
                               onChange={(e) => handleStatusChange(order.id, e.target.value as Order['status'])}
-                              className={`text-xs font-semibold rounded-full px-2 py-1 border-none outline-none ${
+                              className={`text-xs font-semibold rounded-full ${
                                 order.status === 'completed'
                                   ? 'bg-green-100 text-green-800'
                                   : order.status === 'pending'

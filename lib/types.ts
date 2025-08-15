@@ -37,10 +37,10 @@ export interface Review {
 
 export interface Order {
   id: string; // uuid in database
-  userId: string;       // Changed from userId
-  serviceId: string;    // Changed from serviceId
+  userid: string;       // Corrected to lowercase userid
+  serviceid: string;    // Corrected to lowercase serviceid
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
-  customer_name: string;
+  customer_name: string; // Corrected to snake_case customer_name
   phone: string;
   address: string;
   date: string;

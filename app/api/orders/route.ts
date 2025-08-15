@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     console.log('Received order data:', body);
 
     // Validate required fields
-    const requiredFields = ['userId', 'serviceId', 'status', 'customerName', 'phone', 'address', 'date', 'time', 'total']; // Changed back from customer_name, userid, serviceid
+    const requiredFields = ['userid', 'serviceid', 'status', 'customer_name', 'phone', 'address', 'date', 'time', 'total']; // Corrected to match DB schema
     const missingFields = requiredFields.filter(field => !body[field]);
     
     if (missingFields.length > 0) {
