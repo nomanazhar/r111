@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     console.log('Received order data:', body);
 
     // Validate required fields
-    const requiredFields = ['userid', 'serviceid', 'status', 'customerName', 'phone', 'address', 'date', 'time', 'total']; // Changed from userId, serviceId
+    const requiredFields = ['userId', 'serviceId', 'status', 'customerName', 'phone', 'address', 'date', 'time', 'total']; // Changed back from customer_name, userid, serviceid
     const missingFields = requiredFields.filter(field => !body[field]);
     
     if (missingFields.length > 0) {

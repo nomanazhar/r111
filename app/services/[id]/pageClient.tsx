@@ -59,8 +59,8 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
       await new Promise((resolve) => setTimeout(resolve, 1000));
       
       const newOrder = {
-        userid: 'user-' + Date.now(), // Changed from userId
-        serviceid: String(service.id), // Changed from serviceId
+        userId: 'user-' + Date.now(),   // Changed back from userid
+        serviceId: String(service.id), // Changed back from serviceid
         status: 'pending' as const,
         customer_name: data.name,
         phone: data.phone,
@@ -277,7 +277,7 @@ export default function ServicePageClient({ service, reviews = [] }: { service?:
                         <h4 className="text-md font-semibold text-gray-800 mt-4 mb-2">Customer Details</h4>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Name</span>
-                            <span className="font-medium">{bookedOrder.customer_name}</span>
+                          <span className="font-medium">{bookedOrder.customer_name}</span> // Changed back from customer_name
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-600">Phone</span>

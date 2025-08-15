@@ -37,8 +37,8 @@ export interface Review {
 
 export interface Order {
   id: string; // uuid in database
-  userid: string;       // Changed from userId
-  serviceid: string;    // Changed from serviceId
+  userId: string;       // Changed from userId
+  serviceId: string;    // Changed from serviceId
   status: 'pending' | 'confirmed' | 'in-progress' | 'completed' | 'cancelled';
   customer_name: string;
   phone: string;
