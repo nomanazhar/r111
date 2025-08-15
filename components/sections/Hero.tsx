@@ -2,17 +2,17 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
-import { HiLocationMarker, HiSearch } from 'react-icons/hi';
+
 
 const Hero = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    // Navigate to services or results page
-    const servicesSection = document.getElementById('services');
-    servicesSection?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // const handleSearch = (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   // Navigate to services or results page
+  //   const servicesSection = document.getElementById('services');
+  //   servicesSection?.scrollIntoView({ behavior: 'smooth' });
+  // };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 60 },
@@ -35,7 +35,7 @@ const Hero = () => {
   };
 
   return (
-    <section className="relative h-[95vh] w-full overflow-hidden">
+    <section className="relative h-[100vh] w-full overflow-hidden">
       {/* Background Image with Overlay */}
       <div 
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
