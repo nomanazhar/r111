@@ -3,9 +3,9 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { HiStar } from 'react-icons/hi';
-import type { Review } from '@/lib/types';
+import type { Review, Service } from '@/lib/types';
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
@@ -14,6 +14,16 @@ import { zodResolver } from "@hookform/resolvers/zod";
 const Reviews = ({ reviews }: { reviews: Review[] }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [allReviews, setAllReviews] = useState(reviews);
+  const [services, setServices] = useState<Service[]>([]);
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      const res = await fetch('/api/services');
+      const data = await res.json();
+      setServices(data || []);
+    };
+    void fetchServices(); // Use void to ignore the Promise
+  }, []);
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -135,20 +145,28 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
 
           {isModalOpen && (
             <AddReviewModal
+              services={services} // Pass services to the modal
               onClose={() => setIsModalOpen(false)}
               onSave={async (payload) => {
-                const res = await fetch('/api/reviews', {
-                  method: 'POST',
-                  headers: { 'Content-Type': 'application/json' },
-                  body: JSON.stringify(payload),
-                });
-                if (!res.ok) {
-                  alert("Failed to submit review.");
-                  return;
+                try {
+                  const res = await fetch('/api/reviews', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                  });
+                  if (!res.ok) {
+                    const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+                    alert(`Failed to submit review: ${errorData.error || 'Please try again.'}`);
+                    return;
+                  }
+                  const newReview: Review = await res.json();
+                  setAllReviews((prev) => [newReview, ...prev]);
+                  setIsModalOpen(false);
+                  alert('Review submitted successfully!');
+                } catch (error) {
+                  console.error('Review submission error:', error);
+                  alert('Failed to submit review. Please check your connection and try again.');
                 }
-                const newReview: Review = await res.json();
-                setAllReviews((prev) => [newReview, ...prev]);
-                setIsModalOpen(false);
               }}
             />
           )}
@@ -165,7 +183,7 @@ const reviewSchema = z.object({
   service: z.string().min(1, "Service name is required"),
   rating: z.number().min(1).max(5),
   comment: z.string().min(10, "Comment must be at least 10 characters"),
-  avatar: z.string().url("Invalid URL").optional().or(z.literal("")),
+  avatar: z.string().url("Invalid URL").optional().or(z.literal("")).nullable(), // Made nullable as per DB
 });
 
 type ReviewFormData = z.infer<typeof reviewSchema>;
@@ -173,9 +191,11 @@ type ReviewFormData = z.infer<typeof reviewSchema>;
 function AddReviewModal({
   onClose,
   onSave,
+  services,
 }: {
   onClose: () => void;
   onSave: (payload: Omit<ReviewFormData, "service"> & { service: string }) => Promise<void>;
+  services: Service[];
 }) {
   const { register, handleSubmit, formState: { errors } } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
@@ -205,12 +225,18 @@ function AddReviewModal({
           </div>
           <div>
             <label htmlFor="reviewService" className="block text-sm font-medium text-gray-700">Service Name</label>
-            <input
-              type="text"
+            <select
               id="reviewService"
               {...register("service")}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
-            />
+            >
+              <option value="">Select a service</option>
+              {services.map((s) => (
+                <option key={s.id} value={s.name}>
+                  {s.name}
+                </option>
+              ))}
+            </select>
             {errors.service && <p className="text-red-500 text-sm mt-1">{errors.service.message}</p>}
           </div>
           <div>
