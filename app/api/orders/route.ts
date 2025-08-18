@@ -86,6 +86,10 @@ export async function PATCH(request: Request) {
 
     console.log('Order updated successfully:', updatedOrder);
 
+    // Initialize email status variables
+    let emailSent = false;
+    let emailError = null;
+    
     // If the status is being changed to 'confirmed', send confirmation email
     if (updates.status === 'confirmed' && updatedOrder) {
       console.log('Status is confirmed, attempting to send email...');
@@ -102,6 +106,7 @@ export async function PATCH(request: Request) {
 
         if (serviceError) {
           console.error('Failed to fetch service details:', serviceError);
+          emailError = `Failed to fetch service details: ${serviceError.message}`;
         } else if (service) {
           console.log('Service details fetched:', service);
           // Use the actual email from the order
@@ -110,16 +115,23 @@ export async function PATCH(request: Request) {
           
           await sendOrderConfirmationEmail(updatedOrder, service, customerEmail);
           console.log('Order confirmation email sent successfully');
+          emailSent = true;
         } else {
           console.log('No service found for serviceid:', updatedOrder.serviceid);
+          emailError = 'Service not found';
         }
       } catch (emailError) {
         console.error('Failed to send confirmation email:', emailError);
-        // Don't fail the entire request if email fails
+        emailError = emailError instanceof Error ? emailError.message : 'Unknown email error';
       }
     } else {
       console.log('Status is not confirmed or no updated order:', updates.status, !!updatedOrder);
+      emailError = 'No email sent - status not confirmed';
     }
+    
+    // Always add email status to the response
+    updatedOrder.emailSent = emailSent;
+    updatedOrder.emailError = emailError;
 
     return NextResponse.json(updatedOrder);
   } catch (e: any) {

@@ -31,9 +31,26 @@ export default function AdminPageClient() {
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSaving, setIsSaving] = useState(false);
+  const [emailConfigured, setEmailConfigured] = useState<boolean | null>(null);
 
   useEffect(() => {
     void refreshAll();
+    
+    // Check email configuration
+    const checkEmailConfig = async () => {
+      try {
+        const response = await fetch('/api/email-status');
+        if (response.ok) {
+          const data = await response.json();
+          setEmailConfigured(data.emailConfigured);
+        }
+      } catch (error) {
+        console.error('Failed to check email configuration:', error);
+        setEmailConfigured(false);
+      }
+    };
+    
+    checkEmailConfig();
   }, []);
 
   useEffect(() => {
@@ -77,14 +94,42 @@ export default function AdminPageClient() {
   async function handleStatusChange(orderId: string, newStatus: Order['status']) {
     const order = orders.find((o) => o.id === orderId);
     if (!order) return;
-    const res = await fetch('/api/orders', {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: orderId, status: newStatus }),
-    });
-    if (res.ok) {
-      const updated = await res.json();
-      setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+    
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: orderId, status: newStatus }),
+      });
+      
+      if (res.ok) {
+        const updated = await res.json();
+        setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+        
+        // Show success message for email notifications
+        if (newStatus === 'confirmed') {
+          if (updated.emailSent) {
+            alert(`Order confirmed! ✅ Confirmation email sent to ${order.email}`);
+          } else if (updated.emailError) {
+            alert(`Order confirmed! ⚠️ Email failed: ${updated.emailError}`);
+          } else {
+            alert(`Order confirmed! Email status unknown.`);
+          }
+        } else if (newStatus === 'completed') {
+          alert(`Order marked as completed!`);
+        } else {
+          alert(`Order status updated to ${newStatus}`);
+        }
+        
+        // Log the full response for debugging
+        console.log('Order update response:', updated);
+      } else {
+        const errorData = await res.json().catch(() => ({ error: 'Unknown error' }));
+        alert(`Failed to update order status: ${errorData.error || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error('Error updating order status:', error);
+      alert('Failed to update order status. Please try again.');
     }
   }
 
@@ -268,6 +313,24 @@ export default function AdminPageClient() {
             <motion.div variants={itemVariants} className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
               <p className="text-gray-600">Manage your RIII platform</p>
+              
+              {/* Email Status Indicator */}
+              {emailConfigured !== null && (
+                <div className={`mt-4 p-3 rounded-lg ${emailConfigured ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                  <div className="flex items-center gap-2">
+                    <div className={`w-3 h-3 rounded-full ${emailConfigured ? 'bg-green-500' : 'bg-red-500'}`}></div>
+                    <span className={`text-sm font-medium ${emailConfigured ? 'text-green-800' : 'text-red-800'}`}>
+                      {emailConfigured ? '✅ Email notifications enabled' : '❌ Email notifications disabled'}
+                    </span>
+                  </div>
+                  <p className={`text-xs mt-1 ${emailConfigured ? 'text-green-600' : 'text-red-600'}`}>
+                    {emailConfigured 
+                      ? 'Confirmation emails will be sent when orders are confirmed'
+                      : 'Configure RESEND_API_KEY to enable email notifications'
+                    }
+                  </p>
+                </div>
+              )}
             </motion.div>
 
             <motion.div variants={itemVariants} className="mb-8">

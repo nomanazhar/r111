@@ -17,6 +17,7 @@ export async function sendOrderConfirmationEmail(
   customerEmail: string
 ) {
   try {
+    console.log('=== EMAIL DEBUG START ===');
     console.log('sendOrderConfirmationEmail called with:', {
       orderId: order.id,
       customerEmail,
@@ -25,6 +26,7 @@ export async function sendOrderConfirmationEmail(
     });
 
     const resend = getResendClient();
+    console.log('Resend client initialized successfully');
 
     const { data, error } = await resend.emails.send({
       from: 'RIII Services <onboarding@resend.dev>',
@@ -44,13 +46,16 @@ export async function sendOrderConfirmationEmail(
 
     if (error) {
       console.error('Resend API error:', error);
+      console.log('=== EMAIL DEBUG END - ERROR ===');
       throw new Error(`Failed to send email: ${error.message}`);
     }
 
     console.log('Order confirmation email sent successfully:', data);
+    console.log('=== EMAIL DEBUG END - SUCCESS ===');
     return data;
   } catch (error) {
     console.error('Error sending order confirmation email:', error);
+    console.log('=== EMAIL DEBUG END - EXCEPTION ===');
     throw error;
   }
 }

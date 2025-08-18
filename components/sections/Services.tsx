@@ -89,7 +89,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
         </motion.div>
 
         <div className="space-y-1">
-          {liveCategories.slice(0, 3).map((category) => {
+          {liveCategories.slice(0, 10).map((category) => {
             const categoryServices = getServicesByCategory(category.slug);
             
             if (categoryServices.length === 0) return null;

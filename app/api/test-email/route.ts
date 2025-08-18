@@ -3,8 +3,10 @@ import { sendOrderConfirmationEmail } from '@/lib/email';
 
 export async function POST() {
   try {
+    console.log('=== TEST EMAIL START ===');
     console.log('Testing email functionality...');
     console.log('RESEND_API_KEY present:', !!process.env.RESEND_API_KEY);
+    console.log('RESEND_API_KEY length:', process.env.RESEND_API_KEY?.length || 0);
     
     // Check if API key is present before proceeding
     if (!process.env.RESEND_API_KEY) {
@@ -41,15 +43,21 @@ export async function POST() {
       image: 'test-image.jpg',
     };
 
+    console.log('About to call sendOrderConfirmationEmail...');
     await sendOrderConfirmationEmail(testOrder, testService, 'test@example.com');
+    console.log('sendOrderConfirmationEmail completed successfully');
     
+    console.log('=== TEST EMAIL SUCCESS ===');
     return NextResponse.json({ 
       success: true, 
       message: 'Test email sent successfully',
       apiKeyPresent: true
     });
   } catch (error: any) {
+    console.error('=== TEST EMAIL ERROR ===');
     console.error('Test email failed:', error);
+    console.error('Error message:', error.message);
+    console.error('Error stack:', error.stack);
     return NextResponse.json({ 
       success: false, 
       error: error.message,
