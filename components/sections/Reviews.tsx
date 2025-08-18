@@ -16,9 +16,19 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
 
   useEffect(() => {
     const fetchServices = async () => {
-      const res = await fetch('/api/services');
-      const data = await res.json();
-      setServices(data || []);
+      try {
+        const res = await fetch('/api/services');
+        if (!res.ok) {
+          console.warn('Failed to fetch services:', res.status, res.statusText);
+          setServices([]);
+          return;
+        }
+        const data = await res.json();
+        setServices(data || []);
+      } catch (error) {
+        console.warn('Error fetching services:', error);
+        setServices([]);
+      }
     };
     void fetchServices(); // Use void to ignore the Promise
   }, []);
@@ -55,7 +65,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
   };
 
   return (
-    <section className="py-10 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section className="py-8 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
@@ -63,8 +73,8 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
           viewport={{ once: true }}
           variants={containerVariants}
         >
-          <motion.div className="text-center mb-12" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <motion.div className="text-center mb-2" variants={itemVariants}>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
               What Our <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Customers</span> Say
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -72,17 +82,17 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
             </p>
           </motion.div>
 
-          <motion.div variants={itemVariants} className="text-center mb-12">
+          <motion.div variants={itemVariants} className="text-center mb-6">
             <button
               onClick={() => setIsModalOpen(true)}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors hidden"
+              className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-lg font-medium flex items-center gap-2 mx-auto transition-colors hidden"
             >
               <HiPlus className="h-5 w-5" />
               Add a Review
             </button>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {allReviews.map((review, index) => (
               <motion.div
                 key={review.id}
@@ -91,9 +101,9 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
                   scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
-                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-6 border border-gray-100"
+                className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 p-2 border border-gray-100"
               >
-                <div className="flex items-center gap-3 mb-4">
+                <div className="flex items-center gap-3 mb-1">
                   <div className="relative w-12 h-12 rounded-full overflow-hidden">
                     <Image
                       src={
@@ -112,11 +122,11 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1 mb-4">
+                <div className="flex items-center gap-1 mb-2">
                   {renderStars(review.rating)}
                 </div>
 
-                <p className="text-gray-700 leading-relaxed mb-4 line-clamp-4">
+                <p className="text-gray-700 leading-relaxed mb-2 line-clamp-4">
                   "{review.comment}"
                 </p>
 
@@ -132,7 +142,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
           </div>
 
           <motion.div 
-            className="text-center mt-12"
+            className="text-center mt-6"
             variants={itemVariants}
           >
             <div className="inline-flex items-center gap-2 bg-yellow-100 text-yellow-800 px-6 py-3 rounded-full font-semibold">

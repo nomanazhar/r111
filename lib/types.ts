@@ -10,7 +10,7 @@ export interface Service {
 }
 
 export interface Category {
-  id: number;
+  id: string; // Changed from number to string to match database UUID
   name: string;
   description?: string | null;
   image: string;
@@ -26,7 +26,7 @@ export interface Location {
 }
 
 export interface Review {
-  id: number;
+  id: string; // Changed from number to string to match database UUID
   name: string;
   service: string;
   rating: number;

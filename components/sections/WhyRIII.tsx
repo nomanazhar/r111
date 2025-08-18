@@ -49,16 +49,16 @@ const WhyRIII = () => {
   ];
 
   return (
-    <section className="py-5 bg-gradient-to-br from-white to-blue-50">
+    <section className="py-4 bg-gradient-to-br from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-120px' }}
           variants={containerVariants}
-          className="text-center mb-12"
+          className="text-center mb-6"
         >
-          <motion.h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6" variants={itemVariants}>
+          <motion.h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2" variants={itemVariants}>
             Why choose <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">RIII</span>
           </motion.h2>
           <motion.p className="text-xl text-gray-600 max-w-3xl mx-auto" variants={itemVariants}>
@@ -71,19 +71,19 @@ const WhyRIII = () => {
           whileInView="visible"
           viewport={{ once: true, margin: '-80px' }}
           variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6"
         >
           {features.map(({ title, description, Icon }, index) => (
             <motion.div
               key={title}
               variants={itemVariants}
               whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
+              className="bg-white rounded-2xl p-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
             >
-              <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-md mb-4 mx-auto">
+              <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-md mb-2 mx-auto">
                 <Icon className="h-7 w-7" />
               </div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2 text-center">{title}</h3>
+              <h3 className="text-lg font-semibold text-gray-900 mb-1 text-center">{title}</h3>
               <p className="text-gray-600 text-center">{description}</p>
             </motion.div>
           ))}

@@ -123,8 +123,8 @@ export default function CategoryPageClient({
                         <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full font-semibold">${service.price}</div>
                       </div>
                       <div className="p-4">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">{service.name}</h3>
-                        <p className="text-gray-600 mb-2 leading-relaxed">{service.description}</p>
+                                                 <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">{service.name}</h3>
+                         <p className="text-gray-600 mb-2 leading-relaxed line-clamp-2">{service.description}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1 text-yellow-500">
                             <HiStar className="h-5 w-5" />

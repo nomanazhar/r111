@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 
 const Hero = () => {
@@ -58,7 +59,15 @@ const Hero = () => {
             className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6 leading-tight"
             variants={fadeInUp}
           >
-            <span className="text-blue-400">#1</span> Super app for all{' '}
+            <span className="text-blue-400">#1</span>
+            <Image 
+              src="/flag-of-the-united-arab-emirates.webp" 
+              alt="UAE Flag" 
+              width={60} 
+              height={40} 
+              className="inline-block mx-2 align-middle"
+            />
+            Super app for all{' '}
             <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
               home services
             </span>
@@ -102,7 +111,7 @@ const Hero = () => {
               className="mt-8 flex flex-wrap gap-3 justify-center"
               variants={fadeInUp}
             >
-              {['Cleaning', 'Repair', 'Beauty', 'Spa'].map((service) => (
+              {['moving & shifting', 'packing', 'plumber', 'electrician','painter','cleaning','maintainence'].map((service) => (
                 <button
                   key={service}
                   onClick={() => {

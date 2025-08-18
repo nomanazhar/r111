@@ -28,7 +28,9 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
         ]);
         if (!isCancelled && Array.isArray(s)) setLiveServices(s);
         if (!isCancelled && Array.isArray(c)) setLiveCategories(c);
-      } catch {}
+      } catch (error) {
+        console.warn('Error fetching services/categories:', error);
+      }
     };
     void fetchLatest();
 
@@ -69,8 +71,8 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
   };
 
   return (
-    <section id="services" className="py-10 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section id="services" className="py-8 bg-white">
+      <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-8">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -78,7 +80,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
           variants={containerVariants}
           className="text-center mb-10"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
             Popular <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Services</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -86,7 +88,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
           </p>
         </motion.div>
 
-        <div className="space-y-2">
+        <div className="space-y-1">
           {liveCategories.slice(0, 3).map((category) => {
             const categoryServices = getServicesByCategory(category.slug);
             
@@ -99,10 +101,10 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={containerVariants}
-                className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-8"
+                className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-4"
               >
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                  <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
+                  <div className="flex items-center gap-4 mb-1 sm:mb-0">
                     
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900">{category.name}</h3>
@@ -118,7 +120,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                   </Link>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                   {categoryServices.slice(0, 3).map((service) => (
                     <motion.div
                       key={service.id}
@@ -141,8 +143,8 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                             ${service.price}
                           </div>
                         </div>
-                        <div className="p-2">
-                          <h4 className="font-bold text-gray-900 mb-2  hover:text-blue-600 transition-colors">
+                        <div className="p-1">
+                          <h4 className="font-bold text-gray-900 mb-1  hover:text-blue-600 transition-colors">
                             {service.name}
                           </h4>
                           <p className="text-gray-600 text-sm mb-1 line-clamp-2">

@@ -18,9 +18,15 @@ const Categories = ({ categories }: { categories: Category[] }) => {
     const fetchLatest = async () => {
       try {
         const res = await fetch('/api/categories', { cache: 'no-store' });
+        if (!res.ok) {
+          console.warn('Failed to fetch categories:', res.status, res.statusText);
+          return;
+        }
         const data = await res.json();
         if (!isCancelled && Array.isArray(data)) setLiveCategories(data);
-      } catch {}
+      } catch (error) {
+        console.warn('Error fetching categories:', error);
+      }
     };
     void fetchLatest();
 
@@ -87,7 +93,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
           whileInView="visible"
           viewport={{ once: true, margin: "-50px" }}
           variants={containerVariants}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-8"
         >
           {liveCategories.map((category, index) => (
             <motion.div
@@ -111,8 +117,8 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                  <div className="p-2">
+                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                       {category.name}
                     </h3>
                     <p className="text-gray-600 leading-relaxed">

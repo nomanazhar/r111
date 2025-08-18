@@ -28,7 +28,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
   };
 
   return (
-    <section id="locations" className="py-10 bg-white">
+    <section id="locations" className="py-6 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
@@ -36,8 +36,8 @@ const Locations = ({ locations }: { locations: Location[] }) => {
           viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
         >
-          <motion.div className="text-center mb-12" variants={itemVariants}>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
+          <motion.div className="text-center mb-6" variants={itemVariants}>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
               We're <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Everywhere</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
@@ -45,7 +45,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {locations.map((location, index) => (
               <motion.div
                 key={location.id}
@@ -74,11 +74,11 @@ const Locations = ({ locations }: { locations: Location[] }) => {
                       </div>
                     </div>
                   </div>
-                  <div className="p-6">
+                  {/* <div className="p-6">
                     <button className="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors group-hover:bg-gradient-to-r group-hover:from-blue-600 group-hover:to-teal-600">
                       Book Services Here
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </motion.div>
             ))}

@@ -1,8 +1,8 @@
 import './globals.css';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { Hanken_Grotesk } from 'next/font/google';
 
-const inter = Inter({ subsets: ['latin'] });
+const hanken_grotesk = Hanken_Grotesk({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'RIII - #1 Super App for All Home Services',
@@ -36,7 +36,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#2563eb" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className={`${inter.className} antialiased`}>
+      <body className={`${hanken_grotesk.className} antialiased`}>
         <div id="root">{children}</div>
       </body>
     </html>

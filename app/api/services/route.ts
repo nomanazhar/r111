@@ -1,15 +1,21 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabaseAdmin';
 
-export async function GET() {
+export async function GET(request: Request) {
   if (!supabaseAdmin) {
     return NextResponse.json({ error: 'Database connection not configured' }, { status: 500 });
   }
 
-  const { data, error } = await supabaseAdmin
-    .from('services')
-    .select('*')
-    .order('id');
+  const { searchParams } = new URL(request.url);
+  const category = searchParams.get('category');
+
+  let query = supabaseAdmin.from('services').select('*').order('id');
+  
+  if (category) {
+    query = query.eq('category', category);
+  }
+
+  const { data, error } = await query;
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json(data);
 }

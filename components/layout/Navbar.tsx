@@ -55,7 +55,7 @@ const Navbar = () => {
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   isScrolled 
                     ? 'text-gray-700 hover:text-blue-600' 
-                    : 'text-white/90 hover:text-white'
+                    : 'text-white/90 hover:text-blue-600'
                 }`}
               >
                 Categories
@@ -65,7 +65,7 @@ const Navbar = () => {
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   isScrolled 
                     ? 'text-gray-700 hover:text-blue-600' 
-                    : 'text-white/90 hover:text-white'
+                    : 'text-white/90 hover:text-blue-600'
                 }`}
               >
                 Services
@@ -75,7 +75,7 @@ const Navbar = () => {
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
                   isScrolled 
                     ? 'text-gray-700 hover:text-blue-600' 
-                    : 'text-white/90 hover:text-white'
+                    : 'text-white/90 hover:text-blue-600'
                 }`}
               >
                 Locations

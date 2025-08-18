@@ -65,7 +65,7 @@ const Footer = () => {
 
   return (
     <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <motion.div
           initial="hidden"
           whileInView="visible"
@@ -75,10 +75,10 @@ const Footer = () => {
         >
           {/* Company Info */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <Link href="/" className="text-3xl font-bold text-blue-400 mb-6 block">
+            <Link href="/" className="text-3xl font-bold text-blue-400 mb-2 block">
               RIII
             </Link>
-            <p className="text-gray-300 mb-6 leading-relaxed">
+            <p className="text-gray-300 mb-4 leading-relaxed">
               Your trusted partner for all home services. We connect you with verified professionals 
               to make your life easier and more comfortable.
             </p>
@@ -101,9 +101,9 @@ const Footer = () => {
 
           {/* Quick Links */}
           {footerSections.map((section, index) => (
-            <motion.div key={section.title} variants={itemVariants}>
-              <h3 className="text-lg font-semibold mb-6">{section.title}</h3>
-              <ul className="space-y-3">
+            <motion.div key={section.title} variants={itemVariants} >
+              <h3 className="text-lg font-semibold mb-1">{section.title}</h3>
+              <ul className="space-y-1 ">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link

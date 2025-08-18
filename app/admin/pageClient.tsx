@@ -26,6 +26,10 @@ export default function AdminPageClient() {
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isAddLocationOpen, setIsAddLocationOpen] = useState(false);
+  const [isEditServiceOpen, setIsEditServiceOpen] = useState(false);
+  const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
   const [isSaving, setIsSaving] = useState(false);
 
   useEffect(() => {
@@ -128,13 +132,26 @@ export default function AdminPageClient() {
     setIsAddCategoryOpen(false);
   }
 
-  async function handleDeleteCategory(categoryId: number) {
+  async function handleDeleteCategory(categoryId: string) {
     const res = await fetch('/api/categories', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: categoryId }),
     });
-    if (res.ok) setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+    if (res.ok) {
+      const result = await res.json();
+      setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+      // Also refresh services in case some were deleted due to cascade
+      const servicesRes = await fetch('/api/services');
+      if (servicesRes.ok) {
+        const servicesData = await servicesRes.json();
+        setServices(servicesData ?? []);
+      }
+      // Show success message if provided
+      if (result.message) {
+        alert(result.message);
+      }
+    }
   }
 
   async function handleAddLocation(form: Partial<Location>) {
@@ -171,6 +188,60 @@ export default function AdminPageClient() {
     if (res.ok) setLocations((prev) => prev.filter((l) => l.id !== locationId));
   }
 
+  async function handleEditService(form: Partial<Service>) {
+    if (!editingService) return;
+    setIsSaving(true);
+    const res = await fetch('/api/services', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editingService.id, ...form }),
+    });
+    setIsSaving(false);
+    if (!res.ok) return;
+    const updated = await res.json();
+    setServices((prev) => prev.map((s) => (s.id === editingService.id ? updated : s)));
+    setIsEditServiceOpen(false);
+    setEditingService(null);
+  }
+
+  async function handleEditCategory(form: Partial<Category>) {
+    if (!editingCategory) return;
+    setIsSaving(true);
+    const res = await fetch('/api/categories', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editingCategory.id, ...form }),
+    });
+    setIsSaving(false);
+    if (!res.ok) {
+      let msg = 'Failed to update category';
+      try {
+        const j = await res.json();
+        if (j?.error) msg = j.error;
+      } catch {}
+      throw new Error(msg);
+    }
+    const updated = await res.json();
+    setCategories((prev) => prev.map((c) => (c.id === editingCategory.id ? updated : c)));
+    setIsEditCategoryOpen(false);
+    setEditingCategory(null);
+  }
+
+  function handleEditServiceClick(service: Service) {
+    setEditingService(service);
+    setIsEditServiceOpen(true);
+  }
+
+  function handleEditCategoryClick(category: Category) {
+    setEditingCategory(category);
+    setIsEditCategoryOpen(true);
+  }
+
+  // Check if a category has associated services
+  function hasAssociatedServices(categorySlug: string): boolean {
+    return services.some(service => service.category === categorySlug);
+  }
+
   const totalRevenue = useMemo(() => orders.reduce((sum, order) => sum + (order.total ?? 0), 0), [orders]);
 
   const metrics = [
@@ -180,10 +251,7 @@ export default function AdminPageClient() {
     { title: 'Services', value: services.length.toString(), icon: HiCog, color: 'from-orange-500 to-orange-600', change: '+3%' },
   ];
 
-  const nextCategoryId = useMemo(() => {
-    if (!categories || categories.length === 0) return 1;
-    return Math.max(...categories.map((c) => Number(c.id) || 0)) + 1;
-  }, [categories]);
+
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -392,7 +460,7 @@ export default function AdminPageClient() {
                         <span className="text-yellow-500 flex items-center gap-1">⭐ {service.rating}</span>
                       </div>
                       <div className="flex justify-between">
-                        <button className="text-blue-600 hover:text-blue-800 text-sm font-medium"><HiPencil className="inline h-4 w-4 mr-1" />Edit</button>
+                        <button onClick={() => handleEditServiceClick(service)} className="text-blue-600 hover:text-blue-800 text-sm font-medium"><HiPencil className="inline h-4 w-4 mr-1" />Edit</button>
                          <button onClick={() => handleDeleteService(service.id)} className="text-red-600 hover:text-red-800 text-sm font-medium"><HiTrash className="inline h-4 w-4 mr-1" />Delete</button>
                       </div>
                     </div>
@@ -424,9 +492,14 @@ export default function AdminPageClient() {
                       <p className="text-gray-600 text-sm mb-3 line-clamp-2">{c.description}</p>
                       <div className="flex justify-between">
                         <span className="text-xs text-gray-500">/{c.slug}</span>
-                        <button onClick={() => handleDeleteCategory(c.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
-                          <HiTrash className="inline h-4 w-4 mr-1" />Delete
-                        </button>
+                        <div className="flex gap-2">
+                          <button onClick={() => handleEditCategoryClick(c)} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                            <HiPencil className="inline h-4 w-4 mr-1" />Edit
+                          </button>
+                          <button onClick={() => handleDeleteCategory(c.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                            <HiTrash className="inline h-4 w-4 mr-1" />Delete
+                          </button>
+                        </div>
                       </div>
                     </div>
                   ))}
@@ -435,7 +508,7 @@ export default function AdminPageClient() {
             )}
 
               {activeTab === 'locations' && (
-                <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
+                <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
                   <div className="flex justify-between items-center mb-6">
                     <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
                     <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
@@ -476,7 +549,6 @@ export default function AdminPageClient() {
             )}
             {isAddCategoryOpen && (
               <AddCategoryModal
-                nextId={nextCategoryId}
                 isSaving={isSaving}
                 onClose={() => setIsAddCategoryOpen(false)}
                 onSave={handleAddCategory}
@@ -487,6 +559,30 @@ export default function AdminPageClient() {
                 isSaving={isSaving}
                 onClose={() => setIsAddLocationOpen(false)}
                 onSave={handleAddLocation}
+              />
+            )}
+            {isEditServiceOpen && editingService && (
+              <EditServiceModal
+                service={editingService}
+                categories={categories}
+                isSaving={isSaving}
+                onClose={() => {
+                  setIsEditServiceOpen(false);
+                  setEditingService(null);
+                }}
+                onSave={handleEditService}
+              />
+            )}
+            {isEditCategoryOpen && editingCategory && (
+              <EditCategoryModal
+                category={editingCategory}
+                hasAssociatedServices={hasAssociatedServices(editingCategory.slug)}
+                isSaving={isSaving}
+                onClose={() => {
+                  setIsEditCategoryOpen(false);
+                  setEditingCategory(null);
+                }}
+                onSave={handleEditCategory}
               />
             )}
           </motion.div>
@@ -591,17 +687,14 @@ function AddServiceModal({
 }
 
 function AddCategoryModal({
-  nextId,
   isSaving,
   onClose,
   onSave,
 }: {
-  nextId: number;
   isSaving: boolean;
   onClose: () => void;
   onSave: (form: Partial<Category>) => void;
 }) {
-  const [id, setId] = useState<number>(nextId);
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
   // icon removed per new schema
@@ -639,16 +732,6 @@ function AddCategoryModal({
         <h3 className="text-xl font-bold text-gray-900 mb-4">Add Category</h3>
         <div className="space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">ID</label>
-            <input
-              type="number"
-              value={id}
-              onChange={(e) => setId(Number(e.target.value))}
-              className="w-full px-3 py-2 border rounded-lg bg-gray-50"
-              readOnly
-            />
-          </div>
-          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
             <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
           </div>
@@ -683,7 +766,10 @@ function AddCategoryModal({
                   setError('Name and slug are required');
                   return;
                 }
-                await onSave({ id, name, slug, image: imageUrl, description } as Partial<Category>);
+                
+
+                
+                await onSave({ name, slug, image: imageUrl, description } as Partial<Category>);
               } catch (e: any) {
                 setError(e?.message || 'Failed to save');
               }
@@ -760,6 +846,206 @@ function AddLocationModal({
             className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
           >
             {isSaving ? 'Saving...' : 'Save'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EditServiceModal({
+  service,
+  categories,
+  isSaving,
+  onClose,
+  onSave,
+}: {
+  service: Service;
+  categories: Category[];
+  isSaving: boolean;
+  onClose: () => void;
+  onSave: (form: Partial<Service>) => void;
+}) {
+  const [name, setName] = useState(service.name);
+  const [category, setCategory] = useState(service.category);
+  const [price, setPrice] = useState<number>(service.price);
+  const [description, setDescription] = useState(service.description);
+  const [image, setImage] = useState(service.image);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [duration, setDuration] = useState(service.duration);
+  const [rating, setRating] = useState<number>(service.rating);
+
+  async function uploadSelected(file: File, folder: string) {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('folder', folder);
+    const res = await fetch('/api/upload', { method: 'POST', body: form });
+    if (!res.ok) throw new Error((await res.json()).error || 'Upload failed');
+    const data = await res.json();
+    return data.url as string;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-2xl p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Edit Service</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-3 py-2 border rounded-lg">
+              <option value="">Select a category</option>
+              {categories.map((c) => (
+                <option key={c.id} value={c.slug}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
+              <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
+              <input type="number" step="0.1" value={rating} onChange={(e) => setRating(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
+            </div>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Duration</label>
+            <input value={duration} onChange={(e) => setDuration(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image (upload)</label>
+            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full" />
+            {image && !imageFile && (
+              <div className="mt-2">
+                <img src={image} alt="Current image" className="w-20 h-20 object-cover rounded" />
+                <p className="text-xs text-gray-500 mt-1">Current image</p>
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+          </div>
+        </div>
+        <div className="mt-6 flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg border">Cancel</button>
+          <button
+            disabled={isSaving}
+            onClick={async () => {
+              let imageUrl = image;
+              if (imageFile) {
+                imageUrl = await uploadSelected(imageFile, 'services/images');
+              }
+              await onSave({ name, category, price, description, image: imageUrl, duration, rating } as Partial<Service>);
+            }}
+            className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EditCategoryModal({
+  category,
+  hasAssociatedServices,
+  isSaving,
+  onClose,
+  onSave,
+}: {
+  category: Category;
+  hasAssociatedServices: boolean;
+  isSaving: boolean;
+  onClose: () => void;
+  onSave: (form: Partial<Category>) => void;
+}) {
+  const [name, setName] = useState(category.name);
+  const [slug, setSlug] = useState(category.slug);
+  const [image, setImage] = useState(category.image);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [description, setDescription] = useState(category.description || '');
+  const [error, setError] = useState<string | null>(null);
+
+  async function uploadSelected(file: File, folder: string) {
+    const form = new FormData();
+    form.append('file', file);
+    form.append('folder', folder);
+    const res = await fetch('/api/upload', { method: 'POST', body: form });
+    if (!res.ok) throw new Error((await res.json()).error || 'Upload failed');
+    const data = await res.json();
+    return data.url as string;
+  }
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-2xl p-6">
+        <h3 className="text-xl font-bold text-gray-900 mb-4">Edit Category</h3>
+        <div className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+            <input value={name} onChange={(e) => setName(e.target.value)} className="w-full px-3 py-2 border rounded-lg" />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+            <input 
+              value={slug} 
+              onChange={(e) => setSlug(e.target.value)} 
+              className="w-full px-3 py-2 border rounded-lg"
+            />
+            {hasAssociatedServices && (
+              <p className="text-xs text-blue-600 mt-1">
+                ℹ️ Changing slug will update all associated services automatically
+              </p>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Image (upload)</label>
+            <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full" />
+            {image && !imageFile && (
+              <div className="mt-2">
+                <img src={image} alt="Current image" className="w-20 h-20 object-cover rounded" />
+                <p className="text-xs text-gray-500 mt-1">Current image</p>
+              </div>
+            )}
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-lg" rows={3} />
+          </div>
+          {error && <p className="text-sm text-red-600">{error}</p>}
+        </div>
+        <div className="mt-6 flex justify-end gap-3">
+          <button onClick={onClose} className="px-4 py-2 rounded-lg border">Cancel</button>
+          <button
+            disabled={isSaving}
+            onClick={async () => {
+              try {
+                setError(null);
+                let imageUrl = image;
+                if (imageFile) {
+                  imageUrl = await uploadSelected(imageFile, 'categories/images');
+                }
+                if (!name || !slug) {
+                  setError('Name and slug are required');
+                  return;
+                }
+                await onSave({ name, slug, image: imageUrl, description } as Partial<Category>);
+              } catch (e: any) {
+                setError(e?.message || 'Failed to save');
+              }
+            }}
+            className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
+          >
+            {isSaving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
       </div>
