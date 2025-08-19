@@ -7,13 +7,16 @@ export default async function CategoryPage({ params }: { params: { slug: string 
     return <CategoryPageClient category={undefined} services={[]} locations={[]} />;
   }
 
+  // Decode the slug to handle special characters like &, +, etc.
+  const decodedSlug = decodeURIComponent(params.slug);
+
   const [
     { data: categories },
     { data: services },
     { data: locations },
   ] = await Promise.all([
-    supabase.from('categories').select('*').eq('slug', params.slug).limit(1),
-    supabase.from('services').select('*').eq('category', params.slug),
+    supabase.from('categories').select('*').eq('slug', decodedSlug).limit(1),
+    supabase.from('services').select('*').eq('category', decodedSlug),
     supabase.from('locations').select('*').order('id'),
   ]);
 

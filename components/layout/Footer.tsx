@@ -71,7 +71,7 @@ const Footer = () => {
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-center md:text-left"
         >
           {/* Company Info */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
@@ -84,15 +84,15 @@ const Footer = () => {
             </p>
             
             <div className="space-y-3">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiPhone className="h-5 w-5 text-blue-400" />
                 <span className="text-gray-300">1-800-RIII-HELP</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiMail className="h-5 w-5 text-blue-400" />
                 <span className="text-gray-300">support@riii.com</span>
               </div>
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiLocationMarker className="h-5 w-5 text-blue-400" />
                 <span className="text-gray-300">Available nationwide</span>
               </div>
@@ -101,9 +101,9 @@ const Footer = () => {
 
           {/* Quick Links */}
           {footerSections.map((section, index) => (
-            <motion.div key={section.title} variants={itemVariants} >
+            <motion.div key={section.title} variants={itemVariants}>
               <h3 className="text-lg font-semibold mb-1">{section.title}</h3>
-              <ul className="space-y-1 ">
+              <ul className="space-y-1">
                 {section.links.map((link) => (
                   <li key={link.name}>
                     <Link

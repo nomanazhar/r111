@@ -88,7 +88,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
           </p>
         </motion.div>
 
-        <div className="space-y-1">
+        <div className="space-y-2 capitalize">
           {liveCategories.slice(0, 10).map((category) => {
             const categoryServices = getServicesByCategory(category.slug);
             
@@ -101,7 +101,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={containerVariants}
-                className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-4"
+                className="bg-gradient-to-r from-gray-50 to-blue-50 rounded-3xl p-4 mb-2"
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
                   <div className="flex items-center gap-4 mb-1 sm:mb-0">
@@ -132,7 +132,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                       className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
                     >
                       <Link href={`/services/${service.id}`}>
-                        <div className="relative h-44">
+                        <div className="relative h-32">
                           <Image
                             src={service.image}
                             alt={service.name}

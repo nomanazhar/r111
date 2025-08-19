@@ -25,20 +25,20 @@ const Navbar = () => {
   const menuVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
-    exit: { opacity: 0, y: -20 }
+    exit: { opacity: 0, y: -10 }
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 h-[10vh] z-50 transition-all duration-300 ${
+    <nav className={`fixed top-0 left-0 right-0 h-[10vh] z-50 transition-all duration-100 ${
       isScrolled 
         ? 'bg-white/95 backdrop-blur-sm shadow-md' 
         : 'backdrop-blur-sm'
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full">
-        <div className="flex justify-between items-center h-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full w-[100%]">
+        <div className="flex justify-between items-center h-full w-[90%]">
           {/* Logo */}
-          <div className="flex-shrink-0">
-            <Link href="/" className={`text-2xl font-bold transition-colors ${
+          <div className="flex-shrink-0 z-10 w-[30%]">
+            <Link href="/" className={`text-3xl font-bold transition-colors ${
               isScrolled 
                 ? 'text-blue-600 hover:text-blue-700' 
                 : 'text-blue-600 hover:text-blue-700'
@@ -48,8 +48,8 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
+          <div className="hidden md:block w-[40%]">
+            <div className="ml-10 flex items-baseline space-x-10">
               <Link 
                 href="/#categories" 
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
@@ -90,14 +90,10 @@ const Navbar = () => {
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
+          <div className="md:hidden flex-shrink-0 z-10">
             <button
               onClick={toggleMenu}
-              className={`p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors ${
-                isScrolled 
-                  ? 'bg-white text-gray-700 hover:text-blue-600 hover:bg-gray-100' 
-                  : 'bg-white/20 text-white hover:text-blue-200 hover:bg-white/30'
-              }`}
+              className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors bg-white text-gray-700 hover:text-blue-600 hover:bg-gray-100"
             >
               {isOpen ? <HiX className="h-6 w-6" /> : <HiMenu className="h-6 w-6" />}
             </button>

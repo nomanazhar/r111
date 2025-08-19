@@ -108,7 +108,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             >
               <Link href={`/categories/${category.slug}`}>
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden h-full ">
-                  <div className="relative h-36 overflow-hidden">
+                  <div className="relative h-32 overflow-hidden">
                     <Image
                       src={category.image}
                       alt={category.name}
@@ -118,12 +118,12 @@ const Categories = ({ categories }: { categories: Category[] }) => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   </div>
                   <div className="p-2">
-                    <h3 className="text-xl font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
+                    <h3 className="text-xl capitalize font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                       {category.name}
                     </h3>
-                    <p className="text-gray-600 leading-relaxed">
+                    {/* <p className="text-gray-600 leading-relaxed">
                       {category.description}
-                    </p>
+                    </p> */}
                   </div>
                 </div>
               </Link>

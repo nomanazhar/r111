@@ -80,3 +80,17 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Fix navbar positioning issues - only for main navbar */
+nav[class*="fixed"] {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  z-index: 50 !important;
+}
+
+/* Ensure mobile menu button stays in position */
+.md\:hidden {
+  position: relative !important;
+}

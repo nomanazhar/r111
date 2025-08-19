@@ -67,9 +67,9 @@ const Hero = () => {
               height={40} 
               className="inline-block mx-2 align-middle"
             />
-            Super app for all{' '}
+            Super App for all{' '}
             <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
-              home services
+              Home Services
             </span>
           </motion.h1>
 
@@ -111,7 +111,7 @@ const Hero = () => {
               className="mt-8 flex flex-wrap gap-3 justify-center"
               variants={fadeInUp}
             >
-              {['moving & shifting', 'packing', 'plumber', 'electrician','painter','cleaning','maintainence'].map((service) => (
+              {['Moving & Shifting', 'Packing', 'Plumber', 'Electrician','Painter','Cleaning','Maintainence'].map((service) => (
                 <button
                   key={service}
                   onClick={() => {

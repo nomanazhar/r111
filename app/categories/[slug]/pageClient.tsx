@@ -94,7 +94,7 @@ export default function CategoryPageClient({
               About {category.name}
             </motion.h2>
             <motion.div variants={itemVariants} className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line">
-              {categoryLongDescriptions[category.slug] ?? category.description}
+              {categoryLongDescriptions[category.slug] || category.description || 'No description available.'}
             </motion.div>
           </motion.div>
         </div>
@@ -109,33 +109,33 @@ export default function CategoryPageClient({
             </motion.div>
 
             {services.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                 {services.map((service) => (
                   <motion.div
                     key={service.id}
                     variants={itemVariants}
                     whileHover={{ scale: 1.03, transition: { duration: 0.2 } }}
-                    className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden"
+                    className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-300 overflow-hidden"
                   >
                     <Link href={`/services/${service.id}`}>
-                      <div className="relative h-48">
+                      <div className="relative h-32 md:h-48">
                         <Image src={service.image} alt={service.name} fill className="object-cover hover:scale-105 transition-transform duration-300" />
-                        <div className="absolute top-4 right-4 bg-green-500 text-white px-3 py-1 rounded-full font-semibold">${service.price}</div>
+                        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-500 text-white px-2 py-1 md:px-3 md:py-1 rounded-full font-semibold text-xs md:text-sm">${service.price}</div>
                       </div>
-                      <div className="p-4">
-                                                 <h3 className="text-xl font-bold text-gray-900 mb-2 hover:text-blue-600 transition-colors">{service.name}</h3>
-                         <p className="text-gray-600 mb-2 leading-relaxed line-clamp-2">{service.description}</p>
+                      <div className="p-3 md:p-4">
+                        <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-1 md:mb-2 hover:text-blue-600 transition-colors line-clamp-1 md:line-clamp-none">{service.name}</h3>
+                        <p className="text-gray-600 mb-2 leading-relaxed line-clamp-2 text-xs md:text-sm">{service.description}</p>
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-1 text-yellow-500">
-                            <HiStar className="h-5 w-5" />
-                            <span className="text-gray-700 font-medium">{service.rating}</span>
+                            <HiStar className="h-3 w-3 md:h-5 md:w-5" />
+                            <span className="text-gray-700 font-medium text-xs md:text-sm">{service.rating}</span>
                           </div>
                           <div className="flex items-center gap-1 text-gray-500">
-                            <HiClock className="h-5 w-5" />
-                            <span>{service.duration}</span>
+                            <HiClock className="h-3 w-3 md:h-5 md:w-5" />
+                            <span className="text-xs md:text-sm">{service.duration}</span>
                           </div>
                         </div>
-                        <button className="w-full mt-4 pb-2 bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-semibold transition-colors">Book Now</button>
+                        <button className="w-full mt-2 md:mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 md:py-3 rounded-lg font-semibold transition-colors text-xs md:text-sm">Book Now</button>
                       </div>
                     </Link>
                   </motion.div>

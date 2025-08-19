@@ -102,6 +102,64 @@ Why it matters
 - Better cooling, lower bills, and healthier indoor air quality
 - Recommended every 4–6 months in dusty climates
 `,
+
+  'maintenance': `Professional maintenance services to keep your home and appliances running smoothly. Our skilled technicians provide comprehensive maintenance solutions for all your household needs.
+
+What we offer
+
+- General home maintenance and repairs
+- Appliance maintenance and servicing
+- Plumbing and electrical maintenance
+- Preventive maintenance programs
+
+Benefits
+
+- Extends the lifespan of your appliances and systems
+- Prevents costly breakdowns and repairs
+- Maintains optimal performance and efficiency
+`,
+
+  'moving-&-shifting': `Professional moving and shifting services to make your relocation smooth and stress-free. Our experienced team handles everything from packing to unpacking with care and efficiency.
+
+Services included
+
+- Complete packing and unpacking services
+- Furniture disassembly and reassembly
+- Safe transportation with proper equipment
+- Loading and unloading assistance
+- Storage solutions if needed
+
+Why choose us
+
+- Experienced and trained moving professionals
+- Proper packing materials and equipment
+- Insurance coverage for your belongings
+- Flexible scheduling to suit your needs
+`,
+
+  'AC-Installation-&-Maintenance': `Complete AC installation and maintenance services. From new installations to regular maintenance, we ensure your air conditioning systems work efficiently year-round.
+
+Installation services
+
+- New AC unit installation
+- System upgrades and replacements
+- Ductwork installation and repair
+- Thermostat installation and programming
+
+Maintenance services
+
+- Regular cleaning and servicing
+- Performance optimization
+- Energy efficiency improvements
+- Emergency repairs and troubleshooting
+
+Expert benefits
+
+- Licensed and certified technicians
+- Quality equipment and parts
+- Warranty on installations
+- 24/7 emergency support
+`,
 };
 
 
