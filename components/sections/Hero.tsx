@@ -111,7 +111,7 @@ const Hero = () => {
               className="mt-8 flex flex-wrap gap-3 justify-center"
               variants={fadeInUp}
             >
-              {['Moving & Shifting', 'Packing', 'Plumber', 'Electrician','Painter','Cleaning','Maintainence'].map((service) => (
+              {['Moving & Shifting', 'Packing','Home-Cleaning',  'Electrician','Plumber','Painter','Maintainence'].map((service) => (
                 <button
                   key={service}
                   onClick={() => {
