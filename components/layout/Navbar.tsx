@@ -48,7 +48,7 @@ const Navbar = () => {
           </div>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:block w-[40%]">
+          <div className="hidden md:block w-[46%]">
             <div className="ml-10 flex items-baseline space-x-10">
               <Link 
                 href="/#categories" 
@@ -79,6 +79,16 @@ const Navbar = () => {
                 }`}
               >
                 Locations
+              </Link>
+              <Link
+                href="/contact" 
+                className={`px-2 py-2 text-sm font-medium transition-colors ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-blue-600'
+                }`}
+              >
+                Contact
               </Link>
               <Link 
                 href="/admin" 
@@ -132,6 +142,13 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Locations
+                </Link>
+                <Link
+                  href="/contact"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Contact Us
                 </Link>
                 <Link
                   href="/admin"

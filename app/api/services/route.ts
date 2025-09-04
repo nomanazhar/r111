@@ -31,6 +31,7 @@ export async function POST(request: Request) {
     const name = String(body?.name || '').trim();
     const category = String(body?.category || '').trim();
     const price = Number(body?.price);
+    const discount = Number(body?.discount) || 0;
     const description = String(body?.description || '').trim();
     const image = String(body?.image || '').trim();
     const duration = String(body?.duration || '').trim();
@@ -41,7 +42,7 @@ export async function POST(request: Request) {
     }
 
     const id = typeof body?.id === 'string' && body.id.length > 0 ? body.id : (globalThis.crypto?.randomUUID?.() || undefined);
-    const insertPayload = { id, name, category, price, description, image, duration, rating };
+    const insertPayload = { id, name, category, price, discount, description, image, duration, rating };
 
     const { data, error } = await supabaseAdmin.from('services').insert(insertPayload).select('*').single();
     if (error) {

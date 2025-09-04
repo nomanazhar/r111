@@ -13,7 +13,7 @@ import {
   HiEye,
 } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
-import type { Category, Order, Service, Location } from '@/lib/types';
+import type { Category, Order, Service, Location, User } from '@/lib/types';
 
 type TabId = 'dashboard' | 'orders' | 'services' | 'categories' | 'locations' | 'users';
 
@@ -23,6 +23,7 @@ export default function AdminPageClient() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isAddLocationOpen, setIsAddLocationOpen] = useState(false);
@@ -59,8 +60,18 @@ export default function AdminPageClient() {
       try {
         const res = await fetch('/api/orders', { cache: 'no-store' });
         const data = await res.json();
-        if (!isCancelled && Array.isArray(data)) setOrders(data);
-      } catch {}
+        if (!isCancelled && Array.isArray(data)) {
+          setOrders(data);
+        } else if (!isCancelled) {
+          console.warn('Orders API returned non-array data:', data);
+          setOrders([]);
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error('Error fetching latest orders:', error);
+          setOrders([]);
+        }
+      }
     };
     fetchLatestOrders();
 
@@ -79,20 +90,64 @@ export default function AdminPageClient() {
   }, []);
 
   async function refreshAll() {
-    const [services, categories, locations, orders] = await Promise.all([
-      fetch('/api/services').then((r) => r.json()),
-      fetch('/api/categories').then((r) => r.json()),
-      fetch('/api/locations').then((r) => r.json()),
-      fetch('/api/orders').then((r) => r.json()),
-    ]);
-    setServices(services ?? []);
-    setCategories(categories ?? []);
-    setLocations(locations ?? []);
-    setOrders(orders ?? []);
+    try {
+      const [servicesRes, categoriesRes, locationsRes, ordersRes, usersRes] = await Promise.allSettled([
+        fetch('/api/services').then((r) => r.json()),
+        fetch('/api/categories').then((r) => r.json()),
+        fetch('/api/locations').then((r) => r.json()),
+        fetch('/api/orders').then((r) => r.json()),
+        fetch('/api/users').then((r) => r.json()),
+      ]);
+      
+      // Handle each API response individually to prevent one failure from affecting others
+      if (servicesRes.status === 'fulfilled' && Array.isArray(servicesRes.value)) {
+        setServices(servicesRes.value);
+      } else {
+        console.warn('Services API failed or returned invalid data:', servicesRes);
+        setServices([]);
+      }
+      
+      if (categoriesRes.status === 'fulfilled' && Array.isArray(categoriesRes.value)) {
+        setCategories(categoriesRes.value);
+      } else {
+        console.warn('Categories API failed or returned invalid data:', categoriesRes);
+        setCategories([]);
+      }
+      
+      if (locationsRes.status === 'fulfilled' && Array.isArray(locationsRes.value)) {
+        setLocations(locationsRes.value);
+      } else {
+        console.warn('Locations API failed or returned invalid data:', locationsRes);
+        setLocations([]);
+      }
+      
+      if (ordersRes.status === 'fulfilled' && Array.isArray(ordersRes.value)) {
+        setOrders(ordersRes.value);
+      } else {
+        console.warn('Orders API failed or returned invalid data:', ordersRes);
+        setOrders([]);
+      }
+      
+      if (usersRes.status === 'fulfilled' && Array.isArray(usersRes.value)) {
+        setUsers(usersRes.value);
+      } else {
+        console.warn('Users API failed or returned invalid data:', usersRes);
+        setUsers([]);
+      }
+    } catch (error) {
+      console.error('Error refreshing data:', error);
+      // Set empty arrays on error to prevent crashes
+      setServices([]);
+      setCategories([]);
+      setLocations([]);
+      setOrders([]);
+      setUsers([]);
+    }
   }
 
   async function handleStatusChange(orderId: string, newStatus: Order['status']) {
-    const order = orders.find((o) => o.id === orderId);
+    if (!Array.isArray(orders) || !orderId || !newStatus) return;
+    const order = orders.find((o) => o?.id === orderId);
     if (!order) return;
     
     try {
@@ -104,7 +159,10 @@ export default function AdminPageClient() {
       
       if (res.ok) {
         const updated = await res.json();
-        setOrders((prev) => prev.map((o) => (o.id === orderId ? updated : o)));
+        setOrders((prev) => {
+          if (!Array.isArray(prev)) return [updated];
+          return prev.map((o) => (o?.id === orderId ? updated : o));
+        });
         
         // Show success message for email notifications
         if (newStatus === 'confirmed') {
@@ -143,7 +201,10 @@ export default function AdminPageClient() {
     setIsSaving(false);
     if (!res.ok) return;
     const created = await res.json();
-    setServices((prev) => [created, ...prev]);
+    setServices((prev) => {
+      if (!Array.isArray(prev)) return [created];
+      return [created, ...prev];
+    });
     setIsAddServiceOpen(false);
   }
 
@@ -153,7 +214,10 @@ export default function AdminPageClient() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: serviceId }),
     });
-    if (res.ok) setServices((prev) => prev.filter((s) => s.id !== serviceId));
+    if (res.ok) setServices((prev) => {
+      if (!Array.isArray(prev)) return [];
+      return prev.filter((s) => s?.id !== serviceId);
+    });
   }
 
   async function handleAddCategory(form: Partial<Category>) {
@@ -173,7 +237,10 @@ export default function AdminPageClient() {
       throw new Error(msg);
     }
     const created = await res.json();
-    setCategories((prev) => [created, ...prev]);
+    setCategories((prev) => {
+      if (!Array.isArray(prev)) return [created];
+      return [created, ...prev];
+    });
     setIsAddCategoryOpen(false);
   }
 
@@ -185,7 +252,10 @@ export default function AdminPageClient() {
     });
     if (res.ok) {
       const result = await res.json();
-      setCategories((prev) => prev.filter((c) => c.id !== categoryId));
+      setCategories((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.filter((c) => c?.id !== categoryId);
+      });
       // Also refresh services in case some were deleted due to cascade
       const servicesRes = await fetch('/api/services');
       if (servicesRes.ok) {
@@ -215,7 +285,10 @@ export default function AdminPageClient() {
         return;
       }
       const created = await res.json();
-      setLocations((prev) => [created, ...prev]);
+      setLocations((prev) => {
+        if (!Array.isArray(prev)) return [created];
+        return [created, ...prev];
+      });
       setIsAddLocationOpen(false);
     } catch (error) {
       setIsSaving(false);
@@ -230,7 +303,10 @@ export default function AdminPageClient() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id: locationId }),
     });
-    if (res.ok) setLocations((prev) => prev.filter((l) => l.id !== locationId));
+    if (res.ok) setLocations((prev) => {
+      if (!Array.isArray(prev)) return [];
+      return prev.filter((l) => l?.id !== locationId);
+    });
   }
 
   async function handleEditService(form: Partial<Service>) {
@@ -244,7 +320,10 @@ export default function AdminPageClient() {
     setIsSaving(false);
     if (!res.ok) return;
     const updated = await res.json();
-    setServices((prev) => prev.map((s) => (s.id === editingService.id ? updated : s)));
+            setServices((prev) => {
+          if (!Array.isArray(prev)) return [updated];
+          return prev.map((s) => (s?.id === editingService.id ? updated : s));
+        });
     setIsEditServiceOpen(false);
     setEditingService(null);
   }
@@ -267,7 +346,10 @@ export default function AdminPageClient() {
       throw new Error(msg);
     }
     const updated = await res.json();
-    setCategories((prev) => prev.map((c) => (c.id === editingCategory.id ? updated : c)));
+            setCategories((prev) => {
+          if (!Array.isArray(prev)) return [updated];
+          return prev.map((c) => (c?.id === editingCategory.id ? updated : c));
+        });
     setIsEditCategoryOpen(false);
     setEditingCategory(null);
   }
@@ -284,16 +366,23 @@ export default function AdminPageClient() {
 
   // Check if a category has associated services
   function hasAssociatedServices(categorySlug: string): boolean {
-    return services.some(service => service.category === categorySlug);
+    if (!Array.isArray(services) || !categorySlug) return false;
+    return services.some(service => service?.category === categorySlug);
   }
 
-  const totalRevenue = useMemo(() => orders.reduce((sum, order) => sum + (order.total ?? 0), 0), [orders]);
+  const totalRevenue = useMemo(() => {
+    if (!Array.isArray(orders)) return 0;
+    return orders.reduce((sum, order) => {
+      const total = typeof order?.total === 'number' ? order.total : 0;
+      return sum + total;
+    }, 0);
+  }, [orders]);
 
   const metrics = [
-    { title: 'Total Orders', value: orders.length.toString(), icon: HiClipboardList, color: 'from-blue-500 to-blue-600', change: '+12%' },
+    { title: 'Total Orders', value: (Array.isArray(orders) ? orders.length : 0).toString(), icon: HiClipboardList, color: 'from-blue-500 to-blue-600', change: '+12%' },
     { title: 'Revenue', value: `$${totalRevenue.toLocaleString()}`, icon: HiCurrencyDollar, color: 'from-green-500 to-green-600', change: '+8%' },
-    { title: 'Active Users', value: '1,234', icon: HiUsers, color: 'from-purple-500 to-purple-600', change: '+15%' },
-    { title: 'Services', value: services.length.toString(), icon: HiCog, color: 'from-orange-500 to-orange-600', change: '+3%' },
+    { title: 'Active Users', value: (Array.isArray(users) ? users.length : 0).toString(), icon: HiUsers, color: 'from-purple-500 to-purple-600', change: '+15%' },
+    { title: 'Services', value: (Array.isArray(services) ? services.length : 0).toString(), icon: HiCog, color: 'from-orange-500 to-orange-600', change: '+3%' },
   ];
 
 
@@ -395,10 +484,10 @@ export default function AdminPageClient() {
                         </tr>
                       </thead>
                       <tbody className="bg-white divide-y divide-gray-200">
-                        {orders.slice(0, 5).map((order) => (
+                        {orders?.slice(0, 5).map((order) => (
                           <tr key={order.id}>
                             <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.customer_name}</td>
-                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
+                            <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services?.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.date}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
@@ -454,7 +543,7 @@ export default function AdminPageClient() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {orders.map((order) => (
+                      {orders?.map((order) => (
                         <tr key={order.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#{order.id}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
@@ -463,7 +552,7 @@ export default function AdminPageClient() {
                               <div className="text-sm text-gray-500">{order.phone}</div>
                             </div>
                           </td>
-                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{services?.find((s) => String(s.id) === order.serviceid)?.name || 'Unknown Service'}</td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <div className="text-sm text-gray-900">{order.date}</div>
                             <div className="text-sm text-gray-500">{order.time}</div>
@@ -515,7 +604,7 @@ export default function AdminPageClient() {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {services.map((service) => (
+                  {services?.map((service) => (
                     <div key={service.id} className="border border-gray-200 rounded-lg p-4">
                       <h3 className="font-bold text-gray-900 mb-2">{service.name}</h3>
                       <p className="text-gray-600 text-sm mb-3 line-clamp-2">{service.description}</p>
@@ -543,7 +632,7 @@ export default function AdminPageClient() {
                   </button>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categories.map((c) => (
+                  {categories?.map((c) => (
                     <div key={c.id} className="border border-gray-200 rounded-lg p-4">
                       <div className="flex items-center gap-3 mb-2">
                         <h4 className="font-bold text-gray-900">{c.name}</h4>
@@ -581,7 +670,7 @@ export default function AdminPageClient() {
                     </button>
                   </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {locations.map((l) => (
+                    {locations?.map((l) => (
                       <div key={l.id} className="border border-gray-200 rounded-lg p-4">
                         {l.image && (
                           <div className="mb-2">
@@ -600,8 +689,75 @@ export default function AdminPageClient() {
                   </div>
                 </motion.div>
               )}
-           
-            
+
+            {activeTab === 'users' && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Users Management</h3>
+                  <button 
+                    onClick={refreshAll}
+                    className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+                  >
+                    Refresh
+                  </button>
+                </div>
+                
+                <div className="overflow-x-auto">
+                  <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-50">
+                      <tr>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Phone</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Source</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Message</th>
+                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Created</th>
+                      </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                      {users?.map((user) => (
+                        <tr key={user.id} className="hover:bg-gray-50">
+                          <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {user.name}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.email}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.phone}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                              user.source === 'contact_form'
+                                ? 'bg-blue-100 text-blue-800'
+                                : user.source === 'order'
+                                ? 'bg-green-100 text-green-800'
+                                : 'bg-purple-100 text-purple-800'
+                            }`}>
+                              {user.source.replace('_', ' ')}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4 text-sm text-gray-500 max-w-xs">
+                            <div className="truncate" title={user.message || 'No message'}>
+                              {user.message || 'No message'}
+                            </div>
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.created_at ? new Date(user.created_at).toLocaleDateString() : 'N/A'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  
+                  {(!users || users.length === 0) && (
+                    <div className="text-center py-8 text-gray-500">
+                      No users found. Contact form submissions will appear here.
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
 
             {isAddServiceOpen && (
               <AddServiceModal
@@ -670,6 +826,7 @@ function AddServiceModal({
   const [name, setName] = useState('');
   const [category, setCategory] = useState('');
   const [price, setPrice] = useState<number>(0);
+  const [discount, setDiscount] = useState<number>(0);
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -699,17 +856,21 @@ function AddServiceModal({
             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-3 py-2 border rounded-lg">
               <option value="">Select a category</option>
-              {categories.map((c) => (
+              {categories?.map((c) => (
                 <option key={c.id} value={c.slug}>
                   {c.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
               <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+              <input type="number" min="0" max="100" value={discount} onChange={(e) => setDiscount(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
@@ -738,7 +899,7 @@ function AddServiceModal({
               if (imageFile) {
                 imageUrl = await uploadSelected(imageFile, 'services/images');
               }
-              await onSave({ name, category, price, description, image: imageUrl, duration, rating } as Partial<Service>);
+              await onSave({ name, category, price, discount, description, image: imageUrl, duration, rating } as Partial<Service>);
             }}
             className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
           >
@@ -933,6 +1094,7 @@ function EditServiceModal({
   const [name, setName] = useState(service.name);
   const [category, setCategory] = useState(service.category);
   const [price, setPrice] = useState<number>(service.price);
+  const [discount, setDiscount] = useState<number>(service.discount || 0);
   const [description, setDescription] = useState(service.description);
   const [image, setImage] = useState(service.image);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -962,17 +1124,21 @@ function EditServiceModal({
             <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
             <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full px-3 py-2 border rounded-lg">
               <option value="">Select a category</option>
-              {categories.map((c) => (
+              {categories?.map((c) => (
                 <option key={c.id} value={c.slug}>
                   {c.name}
                 </option>
               ))}
             </select>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
               <input type="number" value={price} onChange={(e) => setPrice(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Discount (%)</label>
+              <input type="number" min="0" max="100" value={discount} onChange={(e) => setDiscount(Number(e.target.value))} className="w-full px-3 py-2 border rounded-lg" />
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Rating</label>
@@ -1007,7 +1173,7 @@ function EditServiceModal({
               if (imageFile) {
                 imageUrl = await uploadSelected(imageFile, 'services/images');
               }
-              await onSave({ name, category, price, description, image: imageUrl, duration, rating } as Partial<Service>);
+              await onSave({ name, category, price, discount, description, image: imageUrl, duration, rating } as Partial<Service>);
             }}
             className="px-4 py-2 rounded-lg bg-blue-600 text-white disabled:bg-gray-400"
           >

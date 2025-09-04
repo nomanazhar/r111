@@ -130,6 +130,28 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             </motion.div>
           ))}
         </motion.div>
+
+        {/* Contact CTA */}
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={itemVariants}
+          className="text-center mt-12"
+        >
+          <p className="text-lg text-gray-600 mb-4">
+            Can't find what you're looking for?
+          </p>
+          <Link
+            href="/contact"
+            className="inline-flex items-center px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-colors duration-200"
+          >
+            Contact Us
+            <svg className="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        </motion.div>
       </div>
     </section>
   );

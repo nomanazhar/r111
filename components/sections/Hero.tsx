@@ -124,6 +124,16 @@ const Hero = () => {
                   {service}
                 </button>
               ))}
+              
+              <button
+                onClick={() => {
+                  const contactSection = document.getElementById('contact');
+                  contactSection?.scrollIntoView({ behavior: 'smooth' });
+                }}
+                className="px-6 py-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 backdrop-blur-sm border border-blue-600"
+              >
+                Contact Us
+              </button>
             </motion.div>
           </motion.div>
         </motion.div>

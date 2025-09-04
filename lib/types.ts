@@ -3,6 +3,7 @@ export interface Service {
   name: string;
   category: string; // slug of category
   price: number;
+  discount: number;
   description: string;
   image: string;
   duration: string;
@@ -48,6 +49,17 @@ export interface Order {
   time: string;
   total: number;
   created_at?: string; // DB returns created_at
+}
+
+export interface User {
+  id: string; // uuid in database
+  name: string;
+  email: string;
+  phone: string;
+  message?: string; // Optional message from contact form
+  source: 'contact_form' | 'order' | 'registration'; // How the user was added
+  created_at?: string; // DB returns created_at
+  updated_at?: string; // DB returns updated_at
 }
 
 
