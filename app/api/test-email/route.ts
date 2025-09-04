@@ -37,6 +37,7 @@ export async function POST() {
       name: 'Test Service',
       description: 'A test service for email verification',
       price: 99.99,
+      discount: 10,
       duration: '2 hours',
       category: 'test-category',
       rating: 5,
