@@ -395,7 +395,7 @@ export default function AdminPageClient() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <Navbar />
+      <Navbar className="text-black" />
       <div className="pt-[10vh]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <motion.div initial="hidden" animate="visible" variants={containerVariants}>

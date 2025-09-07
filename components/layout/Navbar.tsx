@@ -6,9 +6,16 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX } from 'react-icons/hi';
 // import { cn } from '@/lib/utils';
 
-const Navbar = () => {
+interface NavbarProps {
+  className?: string;
+}
+
+const Navbar = ({ className = '' }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  
+  // Check if navbar has blue background
+  const isBlueNavbar = className.includes('text-grey-800');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -33,15 +40,17 @@ const Navbar = () => {
       isScrolled 
         ? 'bg-white/95 backdrop-blur-sm shadow-md !text-blue-700' 
         : 'backdrop-blur-sm'
-    }`}>
+    } ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full w-[100%]">
         <div className="flex justify-between items-center h-full w-[90%]">
           {/* Logo */}
           <div className="flex-shrink-0 z-10 w-[30%]">
             <Link href="/" className={`text-3xl font-bold transition-colors ${
-              isScrolled 
-                ? 'text-blue-600 hover:text-blue-700' 
-                : 'text-blue-600 hover:text-blue-700'
+              isBlueNavbar 
+                ? 'text-grey-800 hover:text-blue-200' 
+                : isScrolled 
+                  ? 'text-blue-600 hover:text-blue-700' 
+                  : 'text-blue-600 hover:text-blue-700'
             }`}>
               <img src="/R111MOVERS.png" alt="RIII" className="mt-[13%] w-[40%] h-[60%]" />
             </Link>
@@ -100,12 +109,12 @@ const Navbar = () => {
               >
                 Contact
               </Link>
-              <Link 
+              {/* <Link 
                 href="/adminkknnhhiiffttllooffppadmin" 
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
               >
                 Admin
-              </Link>
+              </Link> */}
             </div>
           </div>
 

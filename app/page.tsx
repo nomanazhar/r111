@@ -43,9 +43,9 @@ export default async function Home() {
       <Services services={services} categories={categories} />
       <WhyRIII />
       <Reviews reviews={reviews} />
-      <Locations locations={locations} />
       <AboutUs />
       <Contact />
+      <Locations locations={locations} />
       <Footer />
     </main>
   );
