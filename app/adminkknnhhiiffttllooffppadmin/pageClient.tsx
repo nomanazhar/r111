@@ -404,7 +404,7 @@ export default function AdminPageClient() {
               <p className="text-gray-600">Manage your RIII platform</p>
               
               {/* Email Status Indicator */}
-              {emailConfigured !== null && (
+              {/* {emailConfigured !== null && (
                 <div className={`mt-4 p-3 rounded-lg ${emailConfigured ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
                   <div className="flex items-center gap-2">
                     <div className={`w-3 h-3 rounded-full ${emailConfigured ? 'bg-green-500' : 'bg-red-500'}`}></div>
@@ -419,7 +419,7 @@ export default function AdminPageClient() {
                     }
                   </p>
                 </div>
-              )}
+              )} */}
             </motion.div>
 
             {/* Navigation Bar - Moved under email notification */}
