@@ -49,7 +49,7 @@ const WhyRIII = () => {
   ];
 
   return (
-    <section className="py-4 bg-gradient-to-br from-white to-blue-50">
+    <section className="py-10 bg-gradient-to-br from-white to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"

@@ -6,6 +6,7 @@ import Services from '@/components/sections/Services';
 import WhyRIII from '@/components/sections/WhyRIII';
 import Reviews from '@/components/sections/Reviews';
 import Locations from '@/components/sections/Locations';
+import AboutUs from '@/components/sections/AboutUs';
 import Contact from '@/components/sections/Contact';
 import Footer from '@/components/layout/Footer';
 import { supabase } from '@/lib/supabaseClient';
@@ -43,6 +44,7 @@ export default async function Home() {
       <WhyRIII />
       <Reviews reviews={reviews} />
       <Locations locations={locations} />
+      <AboutUs />
       <Contact />
       <Footer />
     </main>

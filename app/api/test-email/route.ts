@@ -16,7 +16,7 @@ export async function POST() {
         message: 'Please set the RESEND_API_KEY environment variable to test email functionality'
       }, { status: 400 });
     }
-    
+    console.log('RESEND_API_KEY present:', process.env.RESEND_API_KEY);
     // Create a test order and service
     const testOrder = {
       id: 'test-order-123',

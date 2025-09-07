@@ -29,7 +29,7 @@ export async function sendOrderConfirmationEmail(
     console.log('Resend client initialized successfully');
 
     const { data, error } = await resend.emails.send({
-      from: 'RIII Services <onboarding@resend.dev>',
+      from: 'R111@r111movers.com',
       to: [customerEmail],
       subject: `Order Confirmed - ${service.name} | RIII Services`,
       react: EmailTemplate({

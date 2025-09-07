@@ -71,7 +71,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
   };
 
   return (
-    <section id="services" className="py-8 bg-white">
+    <section id="services" className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-2 sm:px-2 lg:px-8">
         <motion.div
           initial="hidden"

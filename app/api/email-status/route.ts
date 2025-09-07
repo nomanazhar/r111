@@ -5,6 +5,7 @@ export async function GET() {
     const resendApiKey = process.env.RESEND_API_KEY;
     const hasApiKey = !!resendApiKey;
     
+    console.log('RESEND_API_KEY present route:', hasApiKey);
     return NextResponse.json({
       emailConfigured: hasApiKey,
       apiKeyPresent: hasApiKey,

@@ -31,7 +31,7 @@ const Navbar = () => {
   return (
     <nav className={`fixed top-0 left-0 right-0 h-[10vh] z-50 transition-all duration-100 ${
       isScrolled 
-        ? 'bg-white/95 backdrop-blur-sm shadow-md' 
+        ? 'bg-white/95 backdrop-blur-sm shadow-md !text-blue-700' 
         : 'backdrop-blur-sm'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full w-[100%]">
@@ -43,7 +43,7 @@ const Navbar = () => {
                 ? 'text-blue-600 hover:text-blue-700' 
                 : 'text-blue-600 hover:text-blue-700'
             }`}>
-              RIII
+              <img src="/R111MOVERS.png" alt="RIII" className="mt-[13%] w-[40%] h-[60%]" />
             </Link>
           </div>
 
@@ -81,6 +81,16 @@ const Navbar = () => {
                 Locations
               </Link>
               <Link
+                href="/about" 
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-blue-600'
+                }`}
+              >
+                About
+              </Link>
+              <Link
                 href="/contact" 
                 className={`px-2 py-2 text-sm font-medium transition-colors ${
                   isScrolled 
@@ -91,7 +101,7 @@ const Navbar = () => {
                 Contact
               </Link>
               <Link 
-                href="/admin" 
+                href="/adminkknnhhiiffttllooffppadmin" 
                 className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition-colors"
               >
                 Admin
@@ -142,6 +152,13 @@ const Navbar = () => {
                   onClick={() => setIsOpen(false)}
                 >
                   Locations
+                </Link>
+                <Link
+                  href="/about"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  About Us
                 </Link>
                 <Link
                   href="/contact"

@@ -28,7 +28,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
   };
 
   return (
-    <section id="locations" className="py-6 bg-white">
+    <section id="locations" className="py-10 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
