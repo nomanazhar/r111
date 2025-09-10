@@ -52,7 +52,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-blue-600 hover:text-blue-700'
             }`}>
-              <img src="/R111MOVERS.png" alt="RIII" className="mt-[13%] w-[40%] h-[60%]" />
+              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] w-[25%] h-[40%]" />
             </Link>
           </div>
 

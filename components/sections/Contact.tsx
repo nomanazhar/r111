@@ -206,7 +206,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-1">Email Us</h4>
-                  <p className="text-gray-600">info@riii.com</p>
+                  <p className="text-gray-600">r111movers@gmail.com</p>
                   <p className="text-sm text-gray-500">We'll respond within 24 hours</p>
                 </div>
               </div>
@@ -219,8 +219,8 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-1">Call Us</h4>
-                  <p className="text-gray-600">+971 50 123 4567</p>
-                  <p className="text-sm text-gray-500">Mon-Fri 9AM-6PM (GST)</p>
+                  <p className="text-gray-600">+971 52 528 8716</p>
+             
                 </div>
               </div>
 
