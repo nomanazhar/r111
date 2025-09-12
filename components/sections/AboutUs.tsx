@@ -28,7 +28,7 @@ export default function AboutUs() {
             variants={itemVariants}
             className="text-4xl font-bold text-gray-900 mb-4"
           >
-            About RIII Movers
+            About <span className="text-[#245FE8]">RIII</span>  Movers
           </motion.h2>
           <motion.p 
             variants={itemVariants}

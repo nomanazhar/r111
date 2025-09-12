@@ -81,7 +81,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
           className="text-center mb-10"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
-            Popular <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Services</span>
+            Popular <span className="text-[#245FE8]">Services</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Book our most requested services from verified professionals
@@ -140,7 +140,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                             className="object-cover hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute top-2 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
-                            {service.discount}%
+                           SAVE {service.discount}% 
                           </div>
                         </div>
                         <div className="p-1">

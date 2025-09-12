@@ -204,7 +204,7 @@ export default function ServiceDetailPage() {
             <h1 className="text-4xl font-extrabold text-gray-900 mb-4">{service.name}</h1>
             <p className="text-gray-600 mb-4 text-lg leading-relaxed">{service.description}</p>
             <div className="flex items-center mb-4">
-              <span className="text-3xl font-bold text-green-600 mr-4">{service.discount}%</span>
+              <span className="text-3xl font-bold text-green-600 mr-4">SAVE {service.discount}%</span>
               <span className="text-yellow-500 flex items-center text-lg">
                 ⭐ {service.rating} ({service.rating > 4 ? 'Excellent' : 'Good'})
               </span>

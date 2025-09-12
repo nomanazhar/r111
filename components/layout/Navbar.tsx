@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
-import { HiMenu, HiX } from 'react-icons/hi';
+import { HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
+import { servicesData, categoriesData } from '@/lib/data';
 // import { cn } from '@/lib/utils';
 
 interface NavbarProps {
@@ -13,6 +14,7 @@ interface NavbarProps {
 const Navbar = ({ className = '' }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isServicesHovered, setIsServicesHovered] = useState(false);
   
   // Check if navbar has blue background
   const isBlueNavbar = className.includes('text-grey-800');
@@ -29,10 +31,30 @@ const Navbar = ({ className = '' }: NavbarProps) => {
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
+  // Group services by category
+  const getServicesByCategory = () => {
+    const grouped: { [key: string]: typeof servicesData } = {};
+    servicesData.forEach(service => {
+      if (!grouped[service.category]) {
+        grouped[service.category] = [];
+      }
+      grouped[service.category].push(service);
+    });
+    return grouped;
+  };
+
+  const servicesByCategory = getServicesByCategory();
+
   const menuVariants = {
     hidden: { opacity: 0, y: -20 },
     visible: { opacity: 1, y: 0 },
     exit: { opacity: 0, y: -10 }
+  };
+
+  const dropdownVariants = {
+    hidden: { opacity: 0, y: -10, scale: 0.95 },
+    visible: { opacity: 1, y: 0, scale: 1 },
+    exit: { opacity: 0, y: -10, scale: 0.95 }
   };
 
   return (
@@ -52,7 +74,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-blue-600 hover:text-blue-700'
             }`}>
-              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] w-[25%] h-[40%]" />
+              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] w-[30%] h-[45%]" />
             </Link>
           </div>
 
@@ -69,16 +91,73 @@ const Navbar = ({ className = '' }: NavbarProps) => {
               >
                 Categories
               </Link>
-              <Link 
-                href="/#services" 
-                className={`px-3 py-2 text-sm font-medium transition-colors ${
-                  isScrolled 
-                    ? 'text-gray-700 hover:text-blue-600' 
-                    : 'text-white/90 hover:text-blue-600'
-                }`}
+              
+              {/* Services Dropdown */}
+              <div 
+                className="relative"
+                onMouseEnter={() => setIsServicesHovered(true)}
+                onMouseLeave={() => setIsServicesHovered(false)}
               >
-                Services
-              </Link>
+                <button 
+                  className={`px-3 py-2 text-sm font-medium transition-colors flex items-center gap-1 ${
+                    isScrolled 
+                      ? 'text-gray-700 hover:text-blue-600' 
+                      : 'text-white/90 hover:text-blue-600'
+                  }`}
+                >
+                  Services
+                  <HiChevronDown className={`w-4 h-4 transition-transform ${isServicesHovered ? 'rotate-180' : ''}`} />
+                </button>
+                
+                <AnimatePresence>
+                  {isServicesHovered && (
+                    <motion.div
+                      initial="hidden"
+                      animate="visible"
+                      exit="exit"
+                      variants={dropdownVariants}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-lg border border-gray-200 rounded-lg shadow-xl z-50"
+                    >
+                      <div className="p-2">
+                        {Object.entries(servicesByCategory).map(([categorySlug, services]) => {
+                          const category = categoriesData.find(cat => cat.slug === categorySlug);
+                          return (
+                            <div key={categorySlug} className="mb-2 last:mb-0">
+                              <h3 className="text-sm font-semibold text-gray-800  flex items-center gap-2">
+                                <span className="text-lg">{category?.icon}</span>
+                                {category?.name}
+                              </h3>
+                              <div className="space-y-1">
+                                {services.map((service) => (
+                                  <Link
+                                    key={service.id}
+                                    href={`/services/${service.id}`}
+                                    className="block px-3 py-0 text-sm text-gray-600 bg-gray-100 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                  >
+                                    <div className="flex justify-between items-center">
+                                      <span>{service.name}</span>
+                                      <span className="text-xs text-green-600 font-semibold">{service.discount}% OFF</span>
+                                    </div>
+                                  </Link>
+                                ))}
+                              </div>
+                            </div>
+                          );
+                        })}
+                        <div className="border-t border-gray-200 pt-3 mt-3">
+                          <Link
+                            href="/#services"
+                            className="block text-center text-sm font-medium text-blue-600 hover:text-blue-700 py-2"
+                          >
+                            View All Services
+                          </Link>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
               <Link 
                 href="/#locations" 
                 className={`px-3 py-2 text-sm font-medium transition-colors ${
@@ -148,13 +227,42 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                 >
                   Categories
                 </Link>
-                <Link
-                  href="/#services"
-                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
-                  onClick={() => setIsOpen(false)}
-                >
-                  Services
-                </Link>
+                <div className="space-y-1">
+                  <div className="px-3 py-2 text-base font-medium text-gray-700">
+                    Services
+                  </div>
+                  {Object.entries(servicesByCategory).map(([categorySlug, services]) => {
+                    const category = categoriesData.find(cat => cat.slug === categorySlug);
+                    return (
+                      <div key={categorySlug} className="ml-4 space-y-1">
+                        <div className="px-3 py-1 text-sm font-medium text-gray-600 flex items-center gap-2">
+                          <span className="text-base">{category?.icon}</span>
+                          {category?.name}
+                        </div>
+                        {services.map((service) => (
+                          <Link
+                            key={service.id}
+                            href={`/services/${service.id}`}
+                            className="block px-6 py-1 text-sm text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            <div className="flex justify-between items-center">
+                              <span>{service.name}</span>
+                              <span className="text-xs text-green-600 font-semibold">{service.discount}% OFF</span>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    );
+                  })}
+                  <Link
+                    href="/#services"
+                    className="block px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
+                    onClick={() => setIsOpen(false)}
+                  >
+                    View All Services
+                  </Link>
+                </div>
                 <Link
                   href="/#locations"
                   className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"

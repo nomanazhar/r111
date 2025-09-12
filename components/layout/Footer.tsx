@@ -75,7 +75,7 @@ const Footer = () => {
         >
           {/* Company Info */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <Link href="/" className="text-3xl font-bold text-blue-400 mb-2 block">
+            <Link href="/" className="text-3xl font-bold text-[#245FE8] mb-2 block">
               RIII
             </Link>
             <p className="text-gray-300 mb-4 leading-relaxed">

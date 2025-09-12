@@ -68,7 +68,7 @@ const Hero = () => {
               className="inline-block mx-2 align-middle"
             />
             Super App for all{' '}
-            <span className="bg-gradient-to-r from-blue-400 to-teal-400 bg-clip-text text-transparent">
+            <span className="text-[#2CB5E8]">
               Home Services
             </span>
           </motion.h1>

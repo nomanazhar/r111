@@ -75,7 +75,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
         >
           <motion.div className="text-center mb-2" variants={itemVariants}>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-              What Our <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Customers</span> Say
+              What Our <span className="text-[#245FE8]">Customers</span> Say
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Don't just take our word for it - hear from thousands of satisfied customers

@@ -86,19 +86,6 @@ export default function CategoryPageClient({
         </div>
       </section>
 
-      {/* Category long description */}
-      <section className="py-16 bg-white">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
-            <motion.h2 variants={itemVariants} className="text-3xl font-bold text-gray-900 mb-6">
-              About {category.name}
-            </motion.h2>
-            <motion.div variants={itemVariants} className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line">
-              {categoryLongDescriptions[category.slug] || category.description || 'No description available.'}
-            </motion.div>
-          </motion.div>
-        </div>
-      </section>
 
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -120,9 +107,9 @@ export default function CategoryPageClient({
                     <Link href={`/services/${service.id}`}>
                       <div className="relative h-32 md:h-48">
                         <Image src={service.image} alt={service.name} fill className="object-cover hover:scale-105 transition-transform duration-300" />
-                        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-500 text-white px-2 py-1 md:px-3 md:py-1 rounded-full font-semibold text-xs md:text-sm">${service.price}</div>
+                        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-500 text-white px-2 py-1 md:px-3 md:py-1 rounded-full font-semibold text-xs md:text-sm">SAVE {service.discount}%</div>
                       </div>
-                      <div className="p-3 md:p-4">
+                      <div className="p-2 md:p-4">
                         <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-1 md:mb-2 hover:text-blue-600 transition-colors line-clamp-1 md:line-clamp-none">{service.name}</h3>
                         <p className="text-gray-600 mb-2 leading-relaxed line-clamp-2 text-xs md:text-sm">{service.description}</p>
                         <div className="flex items-center justify-between">
@@ -149,6 +136,23 @@ export default function CategoryPageClient({
           </motion.div>
         </div>
       </section>
+
+
+      {/* Category long description */}
+      <section className="py-16 bg-white">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial="hidden" whileInView="visible" viewport={{ once: true }} variants={containerVariants}>
+            <motion.h2 variants={itemVariants} className="text-3xl font-bold text-gray-900 mb-6">
+              About {category.name}
+            </motion.h2>
+            <motion.div variants={itemVariants} className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line">
+              {categoryLongDescriptions[category.slug] || category.description || 'No description available.'}
+            </motion.div>
+          </motion.div>
+        </div>
+      </section>
+
+     
 
       {/* Locations section (same as landing page) */}
       <Locations locations={locations} />

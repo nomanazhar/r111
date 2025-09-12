@@ -78,7 +78,7 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
             variants={itemVariants}
           >
-            Our <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Categories</span>
+            Our <span className="text-[#245FE8]">Categories</span>
           </motion.h2>
           <motion.p 
             className="text-xl text-gray-600 max-w-3xl mx-auto"

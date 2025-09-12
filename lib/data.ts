@@ -3,6 +3,7 @@ export interface Service {
   name: string;
   category: string;
   price: number;
+  discount: number;
   description: string;
   image: string;
   duration: string;
@@ -75,6 +76,7 @@ export const servicesData: Service[] = [
     name: 'Deep House Cleaning',
     category: 'home-cleaning',
     price: 150,
+    discount: 20,
     description: 'Complete deep cleaning service for your entire home',
     image: 'https://images.pexels.com/photos/4099468/pexels-photo-4099468.jpeg?auto=compress&cs=tinysrgb&w=800',
     duration: '3-4 hours',
@@ -85,6 +87,7 @@ export const servicesData: Service[] = [
     name: 'Regular House Cleaning',
     category: 'home-cleaning',
     price: 80,
+    discount: 15,
     description: 'Weekly or bi-weekly house cleaning service',
     image: 'https://images.pexels.com/photos/4099093/pexels-photo-4099093.jpeg?auto=compress&cs=tinysrgb&w=800',
     duration: '2-3 hours',
@@ -95,6 +98,7 @@ export const servicesData: Service[] = [
     name: 'Laptop Repair',
     category: 'pc-repair',
     price: 120,
+    discount: 25,
     description: 'Complete laptop diagnosis and repair service',
     image: 'https://images.pexels.com/photos/2582937/pexels-photo-2582937.jpeg?auto=compress&cs=tinysrgb&w=800',
     duration: '2-3 days',
@@ -105,6 +109,7 @@ export const servicesData: Service[] = [
     name: 'Desktop Setup',
     category: 'pc-repair',
     price: 200,
+    discount: 30,
     description: 'Complete desktop computer setup and optimization',
     image: 'https://images.pexels.com/photos/2047905/pexels-photo-2047905.jpeg?auto=compress&cs=tinysrgb&w=800',
     duration: '1-2 hours',

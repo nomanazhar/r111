@@ -3,9 +3,46 @@
 import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { HiLocationMarker } from 'react-icons/hi';
+import { useState } from 'react';
 import type { Location } from '@/lib/types';
 
 const Locations = ({ locations }: { locations: Location[] }) => {
+  const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
+
+  // Function to get the correct image path
+  const getImagePath = (imageUrl: string) => {
+    // If it's already a local path (starts with /), return as is
+    if (imageUrl.startsWith('/')) {
+      console.log('Using local path:', imageUrl);
+      return imageUrl;
+    }
+    
+    // If it's an external URL, return as is
+    if (imageUrl.startsWith('http')) {
+      console.log('Using external URL:', imageUrl);
+      return imageUrl;
+    }
+    
+    // If it's just a filename, add the / prefix
+    const localPath = `/${imageUrl}`;
+    console.log('Converting filename to local path:', localPath);
+    return localPath;
+  };
+
+  // Handle image load errors
+  const handleImageError = (imageUrl: string) => {
+    setImageErrors(prev => new Set(prev).add(imageUrl));
+  };
+
+  // Get fallback image based on city name
+  const getFallbackImage = (city: string) => {
+    const cityLower = city.toLowerCase();
+    if (cityLower.includes('dubai')) return '/dubai-pictures-bf8wpz0jvz5dr2qv.jpg';
+    if (cityLower.includes('abu')) return '/abu dhabi.jpg';
+    if (cityLower.includes('sharjah')) return '/sharjah.jpg';
+    if (cityLower.includes('ajman')) return '/ajman.webp';
+    return '/dubai-pictures-bf8wpz0jvz5dr2qv.jpg'; // Default fallback
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -38,7 +75,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
         >
           <motion.div className="text-center mb-6" variants={itemVariants}>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-              We're <span className="bg-gradient-to-r from-blue-600 to-teal-600 bg-clip-text text-transparent">Everywhere</span>
+              We're <span className="text-[#245FE8]">Everywhere</span>
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Quality home services available in major cities across the country
@@ -60,10 +97,16 @@ const Locations = ({ locations }: { locations: Location[] }) => {
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   <div className="relative h-48 overflow-hidden">
                     <Image
-                      src={location.image}
+                      src={imageErrors.has(location.image) ? getFallbackImage(location.city) : getImagePath(location.image)}
                       alt={`${location.name}, ${location.city}`}
                       fill
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
+                      priority={index < 4} // Prioritize first 4 images
+                      sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 20vw"
+                      quality={85}
+                      placeholder="blur"
+                      blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                      onError={() => handleImageError(location.image)}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                     <div className="absolute bottom-4 left-4 right-4">
