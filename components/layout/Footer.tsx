@@ -11,9 +11,7 @@ const Footer = () => {
       title: 'Services',
       links: [
         { name: 'Home Cleaning', href: '/categories/home-cleaning' },
-        { name: 'PC Repair', href: '/categories/pc-repair' },
-        { name: 'Women\'s Salon', href: '/categories/womens-salon' },
-        { name: 'Women\'s Spa', href: '/categories/womens-spa' }
+        { name: 'PC Repair', href: '/categories/pc-repair' }
       ]
     },
     {
@@ -64,33 +62,35 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <footer className="bg-gray-900 text-white w-[100vw]">
+      <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 text-center md:text-left"
+          className="w-[100%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 text-center md:text-left"
         >
           {/* Company Info */}
           <motion.div variants={itemVariants} className="lg:col-span-2">
-            <Link href="/" className="text-3xl font-bold text-[#245FE8] mb-2 block">
-              RIII
+            <div className='flex flex-row  w-[100%] '>
+            <Link href="/">
+            <img src="/logoR111.png" alt="RIII" className="w-[51%] h-[88%]" />
             </Link>
-            <p className="text-gray-300 mb-4 leading-relaxed">
-              Your trusted partner for all home services. We connect you with verified professionals 
-              to make your life easier and more comfortable.
+            <p className="text-gray-300 mb-2 leading-relaxed">
+              <span className='text-italic font-bold text-[#245FE8]'> " </span> Your trusted partner for all home services. We connect you with verified professionals 
+              to make your life easier and more comfortable <span className='text-italic font-bold text-[#245FE8]'> " </span>
             </p>
-            
+            </div>
+
             <div className="space-y-3">
               <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiPhone className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">1-800-RIII-HELP</span>
+                <span className="text-gray-300">+971 52 528 8716</span>
               </div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiMail className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">support@riii.com</span>
+                <span className="text-gray-300">r111movers@gmail.com</span>
               </div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiLocationMarker className="h-5 w-5 text-blue-400" />
@@ -101,7 +101,7 @@ const Footer = () => {
 
           {/* Quick Links */}
           {footerSections.map((section, index) => (
-            <motion.div key={section.title} variants={itemVariants}>
+            <motion.div key={section.title} variants={itemVariants} className='  text-left'>
               <h3 className="text-lg font-semibold mb-1">{section.title}</h3>
               <ul className="space-y-1">
                 {section.links.map((link) => (
