@@ -56,9 +56,10 @@ export default function CategoryPageClient({
     <div className="min-h-screen bg-gray-50">
       <Navbar />
 
-      <section className="pt-[10vh] pb-20 bg-gradient-to-br from-blue-900 to-purple-900 relative overflow-hidden">
+      <section className="pt-[10vh] pb-20 relative overflow-hidden" 
+      style={{backgroundImage: `url(${category.image})`, backgroundSize: 'cover', backgroundPosition: 'center'}}>
         <div className="absolute inset-0 bg-black/20"></div>
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 ">
           <motion.div initial="hidden" animate="visible" variants={containerVariants} className="text-center">
             <motion.div variants={itemVariants} className="mb-8">
               <Link href="/" className="inline-flex items-center gap-2 text-blue-200 hover:text-blue-100 transition-colors">

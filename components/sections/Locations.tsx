@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { HiLocationMarker } from 'react-icons/hi';
 import { useState } from 'react';
 import type { Location } from '@/lib/types';
+import Link from 'next/link';
 
 const Locations = ({ locations }: { locations: Location[] }) => {
   const [imageErrors, setImageErrors] = useState<Set<string>>(new Set());
@@ -94,6 +95,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
                 }}
                 className="group cursor-pointer"
               >
+             <Link href="/#services">
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden">
                   <div className="relative h-48 overflow-hidden">
                     <Image
@@ -123,6 +125,7 @@ const Locations = ({ locations }: { locations: Location[] }) => {
                     </button>
                   </div> */}
                 </div>
+                </Link>
               </motion.div>
             ))}
           </div>
