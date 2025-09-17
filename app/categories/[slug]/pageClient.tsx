@@ -8,7 +8,8 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import type { Category, Service, Location } from '@/lib/types';
 import Locations from '@/components/sections/Locations';
-import { categoryLongDescriptions } from '@/lib/categoryDescriptions';
+// import { categoryLongDescriptions } from '@/lib/categoryDescriptions';
+
 
 export default function CategoryPageClient({
   category,
@@ -74,9 +75,9 @@ export default function CategoryPageClient({
               {category.name}
             </motion.h1>
 
-            <motion.p variants={itemVariants} className="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
+            {/* <motion.p variants={itemVariants} className="text-xl text-blue-100 max-w-2xl mx-auto mb-8">
               {category.description}
-            </motion.p>
+            </motion.p> */}
 
             <motion.div variants={itemVariants}>
               <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-xl font-semibold text-lg transition-all duration-300 transform hover:scale-105">
@@ -147,7 +148,9 @@ export default function CategoryPageClient({
               About {category.name}
             </motion.h2>
             <motion.div variants={itemVariants} className="prose prose-lg max-w-none text-gray-700 whitespace-pre-line">
-              {categoryLongDescriptions[category.slug] || category.description || 'No description available.'}
+              {/* {categoryLongDescriptions[category.slug] || category.description || 'No description available.'}
+               */}
+               {category.description || 'No description available.'}
             </motion.div>
           </motion.div>
         </div>
