@@ -18,7 +18,6 @@ const Footer = () => {
       title: 'Company',
       links: [
         { name: 'About Us', href: '/about' },
-        { name: 'Careers', href: '/careers' },
         { name: 'Contact', href: '/contact' },
         { name: 'Blog', href: '/blog' }
       ]
@@ -26,10 +25,8 @@ const Footer = () => {
     {
       title: 'Support',
       links: [
-        { name: 'Help Center', href: '/help' },
         { name: 'Terms of Service', href: '/terms' },
         { name: 'Privacy Policy', href: '/privacy' },
-        { name: 'Safety', href: '/safety' }
       ]
     }
   ];
@@ -62,7 +59,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white w-[100vw]">
+    <footer className="bg-gray-900 text-white w-[100%]">
       <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <motion.div
           initial="hidden"
@@ -94,7 +91,7 @@ const Footer = () => {
               </div>
               <div className="flex items-center gap-3 justify-center md:justify-start">
                 <HiLocationMarker className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">Available nationwide</span>
+                <span className="text-gray-300 text-capitalize">31 floor Api Tower sheikh Zayed road</span>
               </div>
             </div>
           </motion.div>

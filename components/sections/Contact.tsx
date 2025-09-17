@@ -233,8 +233,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-900 mb-1">Visit Us</h4>
-                  <p className="text-gray-600">Dubai, United Arab Emirates</p>
-                  <p className="text-sm text-gray-500">Main office in Dubai Business District</p>
+                  <p className="text-gray-600 text-capitalize">31 floor Api Tower sheikh Zayed road</p>
                 </div>
               </div>
             </div>

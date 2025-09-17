@@ -74,7 +74,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-blue-600 hover:text-blue-700'
             }`}>
-              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] w-[30%] h-[45%]" />
+              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] lg:w-[30%]  w-[100px] h-[45%]" />
             </Link>
           </div>
 
@@ -284,13 +284,13 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                 >
                   Contact Us
                 </Link>
-                <Link
+                {/* <Link
                   href="/admin"
                   className="block px-3 py-2 text-base font-medium bg-blue-600 text-white hover:bg-blue-700 rounded-md transition-colors mx-3 text-center"
                   onClick={() => setIsOpen(false)}
                 >
                   Admin Panel
-                </Link>
+                </Link> */}
               </div>
             </motion.div>
           )}

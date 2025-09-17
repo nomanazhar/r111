@@ -80,7 +80,7 @@ const WhyRIII = () => {
               whileHover={{ y: -6, scale: 1.02, transition: { duration: 0.2 } }}
               className="bg-white rounded-2xl p-2 shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100"
             >
-              <div className="flex items-center justify-center w-14 h-14 rounded-xl bg-gradient-to-r from-blue-600 to-teal-600 text-white shadow-md mb-2 mx-auto">
+              <div className="flex items-center justify-center w-14 h-14 rounded-xl  bg-blue-600  text-white shadow-md mb-2 mx-auto">
                 <Icon className="h-7 w-7" />
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-1 text-center">{title}</h3>
