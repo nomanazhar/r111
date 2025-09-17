@@ -179,6 +179,16 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                 About
               </Link>
               <Link
+                href="/blog" 
+                className={`px-3 py-2 text-sm font-medium transition-colors ${
+                  isScrolled 
+                    ? 'text-gray-700 hover:text-blue-600' 
+                    : 'text-white/90 hover:text-blue-600'
+                }`}
+              >
+                Blog
+              </Link>
+              <Link
                 href="/contact" 
                 className={`px-2 py-2 text-sm font-medium transition-colors ${
                   isScrolled 
@@ -276,6 +286,13 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                   onClick={() => setIsOpen(false)}
                 >
                   About Us
+                </Link>
+                <Link
+                  href="/blog"
+                  className="block px-3 py-2 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
+                  onClick={() => setIsOpen(false)}
+                >
+                  Blog
                 </Link>
                 <Link
                   href="/contact"

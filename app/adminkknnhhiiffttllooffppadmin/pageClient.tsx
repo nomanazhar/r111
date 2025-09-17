@@ -13,9 +13,11 @@ import {
   HiEye,
 } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
-import type { Category, Order, Service, Location, User } from '@/lib/types';
+import AddBlogModal from '@/components/AddBlogModal';
+import EditBlogModal from '@/components/EditBlogModal';
+import type { Category, Order, Service, Location, User, Blog } from '@/lib/types';
 
-type TabId = 'dashboard' | 'orders' | 'services' | 'categories' | 'locations' | 'users';
+type TabId = 'dashboard' | 'orders' | 'services' | 'categories' | 'locations' | 'users' | 'blogs';
 
 export default function AdminPageClient() {
   const [activeTab, setActiveTab] = useState<TabId>('dashboard');
@@ -24,13 +26,17 @@ export default function AdminPageClient() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [users, setUsers] = useState<User[]>([]);
+  const [blogs, setBlogs] = useState<Blog[]>([]);
   const [isAddServiceOpen, setIsAddServiceOpen] = useState(false);
   const [isAddCategoryOpen, setIsAddCategoryOpen] = useState(false);
   const [isAddLocationOpen, setIsAddLocationOpen] = useState(false);
+  const [isAddBlogOpen, setIsAddBlogOpen] = useState(false);
   const [isEditServiceOpen, setIsEditServiceOpen] = useState(false);
   const [isEditCategoryOpen, setIsEditCategoryOpen] = useState(false);
+  const [isEditBlogOpen, setIsEditBlogOpen] = useState(false);
   const [editingService, setEditingService] = useState<Service | null>(null);
   const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [editingBlog, setEditingBlog] = useState<Blog | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [emailConfigured, setEmailConfigured] = useState<boolean | null>(null);
 
@@ -91,12 +97,13 @@ export default function AdminPageClient() {
 
   async function refreshAll() {
     try {
-      const [servicesRes, categoriesRes, locationsRes, ordersRes, usersRes] = await Promise.allSettled([
+      const [servicesRes, categoriesRes, locationsRes, ordersRes, usersRes, blogsRes] = await Promise.allSettled([
         fetch('/api/services').then((r) => r.json()),
         fetch('/api/categories').then((r) => r.json()),
         fetch('/api/locations').then((r) => r.json()),
         fetch('/api/orders').then((r) => r.json()),
         fetch('/api/users').then((r) => r.json()),
+        fetch('/api/blogs').then((r) => r.json()),
       ]);
       
       // Handle each API response individually to prevent one failure from affecting others
@@ -134,6 +141,13 @@ export default function AdminPageClient() {
         console.warn('Users API failed or returned invalid data:', usersRes);
         setUsers([]);
       }
+      
+      if (blogsRes.status === 'fulfilled' && Array.isArray(blogsRes.value)) {
+        setBlogs(blogsRes.value);
+      } else {
+        console.warn('Blogs API failed or returned invalid data:', blogsRes);
+        setBlogs([]);
+      }
     } catch (error) {
       console.error('Error refreshing data:', error);
       // Set empty arrays on error to prevent crashes
@@ -142,6 +156,7 @@ export default function AdminPageClient() {
       setLocations([]);
       setOrders([]);
       setUsers([]);
+      setBlogs([]);
     }
   }
 
@@ -364,6 +379,77 @@ export default function AdminPageClient() {
     setIsEditCategoryOpen(true);
   }
 
+  async function handleAddBlog(form: Partial<Blog>) {
+    setIsSaving(true);
+    const res = await fetch('/api/blogs', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(form),
+    });
+    setIsSaving(false);
+    if (!res.ok) {
+      let msg = 'Failed to add blog';
+      try {
+        const j = await res.json();
+        if (j?.error) msg = j.error;
+      } catch {}
+      alert(msg);
+      return;
+    }
+    const created = await res.json();
+    setBlogs((prev) => {
+      if (!Array.isArray(prev)) return [created];
+      return [created, ...prev];
+    });
+    setIsAddBlogOpen(false);
+  }
+
+  async function handleDeleteBlog(blogId: string) {
+    const res = await fetch('/api/blogs', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: blogId }),
+    });
+    if (res.ok) {
+      setBlogs((prev) => {
+        if (!Array.isArray(prev)) return [];
+        return prev.filter((b) => b?.id !== blogId);
+      });
+    }
+  }
+
+  async function handleEditBlog(form: Partial<Blog>) {
+    if (!editingBlog) return;
+    setIsSaving(true);
+    const res = await fetch('/api/blogs', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: editingBlog.id, ...form }),
+    });
+    setIsSaving(false);
+    if (!res.ok) {
+      let msg = 'Failed to update blog';
+      try {
+        const j = await res.json();
+        if (j?.error) msg = j.error;
+      } catch {}
+      alert(msg);
+      return;
+    }
+    const updated = await res.json();
+    setBlogs((prev) => {
+      if (!Array.isArray(prev)) return [updated];
+      return prev.map((b) => (b?.id === editingBlog.id ? updated : b));
+    });
+    setIsEditBlogOpen(false);
+    setEditingBlog(null);
+  }
+
+  function handleEditBlogClick(blog: Blog) {
+    setEditingBlog(blog);
+    setIsEditBlogOpen(true);
+  }
+
   // Check if a category has associated services
   function hasAssociatedServices(categorySlug: string): boolean {
     if (!Array.isArray(services) || !categorySlug) return false;
@@ -433,6 +519,7 @@ export default function AdminPageClient() {
                     { id: 'categories', name: 'Categories' },
                     { id: 'locations', name: 'Locations' },
                     { id: 'users', name: 'Users' },
+                    { id: 'blogs', name: 'Blogs' },
                   ] as { id: TabId; name: string }[]).map((tab) => (
                     <button
                       key={tab.id}
@@ -759,6 +846,58 @@ export default function AdminPageClient() {
               </motion.div>
             )}
 
+            {activeTab === 'blogs' && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Blog Management</h3>
+                  <button onClick={() => setIsAddBlogOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
+                    <HiPlus className="h-5 w-5" />
+                    Add Blog Post
+                  </button>
+                </div>
+                
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {blogs?.map((blog) => (
+                    <div key={blog.id} className="border border-gray-200 rounded-lg p-4">
+                      {blog.image && (
+                        <div className="mb-3">
+                          <img src={blog.image} alt={blog.title} className="w-full h-40 object-cover rounded" />
+                        </div>
+                      )}
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="font-bold text-gray-900 line-clamp-2">{blog.title}</h4>
+                        <div className="flex gap-1">
+                          {blog.published && (
+                            <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                              Published
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center justify-between text-xs text-gray-500 mb-3">
+                        <span>By {blog.author}</span>
+                        <span>{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : 'N/A'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <button onClick={() => handleEditBlogClick(blog)} className="text-blue-600 hover:text-blue-800 text-sm font-medium">
+                          <HiPencil className="inline h-4 w-4 mr-1" />Edit
+                        </button>
+                        <button onClick={() => handleDeleteBlog(blog.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                          <HiTrash className="inline h-4 w-4 mr-1" />Delete
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                
+                {(!blogs || blogs.length === 0) && (
+                  <div className="text-center py-8 text-gray-500">
+                    No blog posts found. Create your first blog post to get started.
+                  </div>
+                )}
+              </motion.div>
+            )}
+
             {isAddServiceOpen && (
               <AddServiceModal
                 categories={categories}
@@ -803,6 +942,24 @@ export default function AdminPageClient() {
                   setEditingCategory(null);
                 }}
                 onSave={handleEditCategory}
+              />
+            )}
+            {isAddBlogOpen && (
+              <AddBlogModal
+                isSaving={isSaving}
+                onClose={() => setIsAddBlogOpen(false)}
+                onSave={handleAddBlog}
+              />
+            )}
+            {isEditBlogOpen && editingBlog && (
+              <EditBlogModal
+                blog={editingBlog}
+                isSaving={isSaving}
+                onClose={() => {
+                  setIsEditBlogOpen(false);
+                  setEditingBlog(null);
+                }}
+                onSave={handleEditBlog}
               />
             )}
           </motion.div>

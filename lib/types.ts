@@ -62,4 +62,16 @@ export interface User {
   updated_at?: string; // DB returns updated_at
 }
 
+export interface Blog {
+  id: string; // uuid in database
+  title: string;
+  slug: string;
+  content: string;
+  image: string;
+  author: string;
+  published: boolean;
+  created_at?: string; // DB returns created_at
+  updated_at?: string; // DB returns updated_at
+}
+
 
