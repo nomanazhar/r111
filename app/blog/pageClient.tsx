@@ -103,6 +103,7 @@ export default function BlogPageClient() {
                         </h3>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-500">By {blog.author}</span>
+                          <span className="text-sm text-gray-500">{blog.hashtags}</span>
                           <span className="text-blue-600 font-medium">Read more →</span>
                         </div>
                       </div>

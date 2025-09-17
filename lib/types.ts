@@ -67,6 +67,7 @@ export interface Blog {
   title: string;
   slug: string;
   content: string;
+  hashtags: string;
   image: string;
   author: string;
   published: boolean;

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import { HiArrowLeft, HiCalendar, HiUser } from 'react-icons/hi';
+import { HiArrowLeft, HiCalendar, HiHashtag, HiUser } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import type { Blog } from '@/lib/types';
@@ -138,12 +138,19 @@ export default function BlogPostPageClient() {
                   <HiCalendar className="h-4 w-4" />
                   <span>{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : 'N/A'}</span>
                 </div>
+                <div className="flex items-center gap-1">
+                 
+                  <span>{blog.hashtags}</span>
+                </div>
               </motion.div>
 
               {/* Title */}
               <motion.h1 variants={itemVariants} className="text-4xl font-bold text-gray-900 mb-6">
                 {blog.title}
               </motion.h1>
+              <motion.p variants={itemVariants} className="text-sm text-gray-500 mb-6">
+                {blog.hashtags}
+              </motion.p>
 
 
               {/* Content */}

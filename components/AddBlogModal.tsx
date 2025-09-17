@@ -19,7 +19,7 @@ export default function AddBlogModal({
   const [author, setAuthor] = useState('RIII Team');
   const [published, setPublished] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
+  const [hashtags, setHashtags] = useState('');
   async function uploadSelected(file: File, folder: string) {
     const form = new FormData();
     form.append('file', file);
@@ -67,7 +67,7 @@ export default function AddBlogModal({
             />
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 ">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Author</label>
               <input 
@@ -75,6 +75,15 @@ export default function AddBlogModal({
                 onChange={(e) => setAuthor(e.target.value)} 
                 className="w-full px-3 py-2 border rounded-lg" 
                 placeholder="Author name"
+              />
+            </div>
+            <div >
+              <label className='block text-sm font-medium text-gray-700 mb-1'>hashtags</label>
+              <input 
+                value={hashtags} 
+                onChange={(e) => setHashtags(e.target.value)} 
+                className="w-full px-3 py-2 border rounded-lg" 
+                placeholder="Enter hashtags"
               />
             </div>
           </div>
@@ -115,7 +124,8 @@ export default function AddBlogModal({
                   content, 
                   image: imageUrl, 
                   author, 
-                  published
+                  published,
+                  hashtags
                 } as Partial<Blog>);
               } catch (e: any) {
                 setError(e?.message || 'Failed to save');

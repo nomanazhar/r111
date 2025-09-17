@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS public.blogs (
     author TEXT NOT NULL DEFAULT 'RIII Team',
     published BOOLEAN DEFAULT false,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    hashtags TEXT DEFAULT ''
 );
 
 -- Create index on slug for faster lookups
