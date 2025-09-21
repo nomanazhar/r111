@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import { HiMenu, HiX, HiChevronDown } from 'react-icons/hi';
-import { servicesData, categoriesData } from '@/lib/data';
+import type { Service, Category } from '@/lib/types';
 // import { cn } from '@/lib/utils';
 
 interface NavbarProps {
@@ -15,6 +15,8 @@ const Navbar = ({ className = '' }: NavbarProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isServicesHovered, setIsServicesHovered] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [categories, setCategories] = useState<Category[]>([]);
   
   // Check if navbar has blue background
   const isBlueNavbar = className.includes('text-grey-800');
@@ -29,12 +31,38 @@ const Navbar = ({ className = '' }: NavbarProps) => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Fetch services and categories from database
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [servicesResponse, categoriesResponse] = await Promise.all([
+          fetch('/api/services', { cache: 'no-store' }),
+          fetch('/api/categories', { cache: 'no-store' })
+        ]);
+
+        if (servicesResponse.ok) {
+          const servicesData = await servicesResponse.json();
+          setServices(servicesData);
+        }
+
+        if (categoriesResponse.ok) {
+          const categoriesData = await categoriesResponse.json();
+          setCategories(categoriesData);
+        }
+      } catch (error) {
+        console.error('Error fetching navbar data:', error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const toggleMenu = () => setIsOpen(!isOpen);
 
   // Group services by category
   const getServicesByCategory = () => {
-    const grouped: { [key: string]: typeof servicesData } = {};
-    servicesData.forEach(service => {
+    const grouped: { [key: string]: Service[] } = {};
+    services.forEach(service => {
       if (!grouped[service.category]) {
         grouped[service.category] = [];
       }
@@ -66,15 +94,16 @@ const Navbar = ({ className = '' }: NavbarProps) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full w-[100%]">
         <div className="flex justify-between items-center h-full w-[90%]">
           {/* Logo */}
-          <div className="flex-shrink-0 z-10 w-[30%]">
-            <Link href="/" className={`text-3xl font-bold transition-colors ${
+          <div className="flex-shrink-0 z-10 w-[30%] ht-groteks">
+            <Link href="/" className={`text-3xl ht-groteks font-bold transition-colors ${
               isBlueNavbar 
                 ? 'text-grey-800 hover:text-blue-200' 
                 : isScrolled 
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-blue-600 hover:text-blue-700'
             }`}>
-              <img src="/logoR111.png" alt="RIII" className="mt-[7.5%] lg:w-[30%]  w-[100px] h-[45%]" />
+              {/* <img src="/12345.png" alt="RIII" className="mt-[7.5%] lg:w-[30%]  w-[100px] h-[45%]" /> */}
+              R111
             </Link>
           </div>
 
@@ -121,7 +150,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                     >
                       <div className="p-2">
                         {Object.entries(servicesByCategory).map(([categorySlug, services]) => {
-                          const category = categoriesData.find(cat => cat.slug === categorySlug);
+                          const category = categories.find(cat => cat.slug === categorySlug);
                           return (
                             <div key={categorySlug} className="mb-2 last:mb-0">
                               <h3 className="text-sm font-semibold text-gray-800  flex items-center gap-2">
@@ -133,26 +162,15 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                                   <Link
                                     key={service.id}
                                     href={`/services/${service.id}`}
-                                    className="block px-3 py-0 text-sm text-gray-600 bg-gray-100 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
+                                    className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-blue-50 rounded-md transition-colors"
                                   >
-                                    <div className="flex justify-between items-center">
-                                      <span>{service.name}</span>
-                                      <span className="text-xs text-green-600 font-semibold">{service.discount}% OFF</span>
-                                    </div>
+                                    {service.name}
                                   </Link>
                                 ))}
                               </div>
                             </div>
                           );
                         })}
-                        <div className="border-t border-gray-200 pt-3 mt-3">
-                          <Link
-                            href="/#services"
-                            className="block text-center text-sm font-medium text-blue-600 hover:text-blue-700 py-2"
-                          >
-                            View All Services
-                          </Link>
-                        </div>
                       </div>
                     </motion.div>
                   )}
@@ -242,7 +260,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                     Services
                   </div>
                   {Object.entries(servicesByCategory).map(([categorySlug, services]) => {
-                    const category = categoriesData.find(cat => cat.slug === categorySlug);
+                    const category = categories.find(cat => cat.slug === categorySlug);
                     return (
                       <div key={categorySlug} className="ml-4 space-y-1">
                         <div className="px-3 py-1 text-sm font-medium text-gray-600 flex items-center gap-2">
@@ -253,25 +271,15 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                           <Link
                             key={service.id}
                             href={`/services/${service.id}`}
-                            className="block px-6 py-1 text-sm text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
+                            className="block px-6 py-2 text-sm text-gray-500 hover:text-blue-600 hover:bg-gray-100 rounded-md transition-colors"
                             onClick={() => setIsOpen(false)}
                           >
-                            <div className="flex justify-between items-center">
-                              <span>{service.name}</span>
-                              <span className="text-xs text-green-600 font-semibold">{service.discount}% OFF</span>
-                            </div>
+                            {service.name}
                           </Link>
                         ))}
                       </div>
                     );
                   })}
-                  <Link
-                    href="/#services"
-                    className="block px-6 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-md transition-colors"
-                    onClick={() => setIsOpen(false)}
-                  >
-                    View All Services
-                  </Link>
                 </div>
                 <Link
                   href="/#locations"

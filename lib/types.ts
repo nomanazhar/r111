@@ -16,6 +16,7 @@ export interface Category {
   description?: string | null;
   image: string;
   slug: string;
+  icon?: string; // Added icon property for navbar display
 }
 
 export interface Location {

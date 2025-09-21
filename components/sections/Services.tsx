@@ -11,6 +11,14 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
   const [liveServices, setLiveServices] = useState<Service[]>(services);
   const [liveCategories, setLiveCategories] = useState<Category[]>(categories);
 
+  // Function to truncate description to 100 characters
+  const truncateDescription = (description: string) => {
+    if (description.length <= 100) {
+      return description;
+    }
+    return description.substring(0, 100) + '...';
+  };
+
   useEffect(() => {
     setLiveServices(services);
   }, [services]);
@@ -107,8 +115,8 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                   <div className="flex items-center gap-4 mb-1 sm:mb-0">
                     
                     <div>
-                      <h3 className="text-2xl font-bold text-gray-900">{category.name}</h3>
-                      <p className="text-gray-600">{category.description}</p>
+                      <h3 className="text-2xl font-bold text-gray-900 mb-3">{category.name}</h3>
+                      {/* <p className="text-gray-600">{category.description}</p> */}
                     </div>
                   </div>
                   <Link
@@ -147,8 +155,8 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                           <h4 className="font-bold text-gray-900 mb-1  hover:text-blue-600 transition-colors">
                             {service.name}
                           </h4>
-                          <p className="text-gray-600 text-sm mb-1 line-clamp-2">
-                            {service.description}
+                          <p className="text-gray-600 text-sm mb-1">
+                            {truncateDescription(service.description)}
                           </p>
                           <div className="flex items-center justify-between text-sm">
                             <div className="flex items-center gap-1 text-yellow-500">

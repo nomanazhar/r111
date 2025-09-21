@@ -34,7 +34,7 @@ const DiscountBanner = ({ services }: DiscountBannerProps) => {
 
   return (
     <div 
-      className="w-full bg-blue-600 text-black py-2 overflow-hidden relative"
+      className="w-full bg-blue-600 text-white py-2 overflow-hidden relative"
       style={{ height: '8vh', zIndex: 999 }}
     >
       <div className="flex items-center h-full">

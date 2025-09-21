@@ -3,39 +3,43 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { HiMail, HiPhone, HiLocationMarker } from 'react-icons/hi';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaGoogle, FaWhatsapp } from 'react-icons/fa';
 
 const Footer = () => {
   const footerSections = [
     {
-      title: 'Services',
+      title: 'Resources',
       links: [
-        { name: 'Home Cleaning', href: '/categories/home-cleaning' },
-        { name: 'PC Repair', href: '/categories/pc-repair' }
+        { name: 'FAQs', href: '/faqs' },
+        { name: 'The Home Project Blog', href: '/blog' },
+        { name: 'Write a review', href: '/reviews' },
+        { name: 'Our service guarantee', href: '/guarantee' }
       ]
     },
     {
-      title: 'Company',
+      title: 'About us',
       links: [
-        { name: 'About Us', href: '/about' },
-        { name: 'Contact', href: '/contact' },
-        { name: 'Blog', href: '/blog' }
+        { name: 'About us', href: '/about' },
+        { name: 'Payment and refund policy', href: '/refund-policy' },
+        { name: 'Careers', href: '/careers' },
+        { name: 'Contact us', href: '/contact' }
       ]
     },
     {
-      title: 'Support',
+      title: 'Partners',
       links: [
-        { name: 'Terms of Service', href: '/terms' },
-        { name: 'Privacy Policy', href: '/privacy' },
+        { name: 'Become a partner', href: '/become-partner' }
       ]
     }
   ];
 
   const socialLinks = [
-    { icon: FaFacebook, href: '#', color: 'hover:text-blue-600' },
-    { icon: FaTwitter, href: '#', color: 'hover:text-sky-400' },
-    { icon: FaInstagram, href: '#', color: 'hover:text-pink-600' },
-    { icon: FaLinkedin, href: '#', color: 'hover:text-blue-700' }
+    { icon: FaFacebook, href: '#', label: 'Facebook' },
+    { icon: FaInstagram, href: '#', label: 'Instagram' },
+    { icon: FaTwitter, href: '#', label: 'Twitter' },
+    { icon: FaLinkedin, href: '#', label: 'LinkedIn' },
+    { icon: FaGoogle, href: '#', label: 'Google' },
+    { icon: FaWhatsapp, href: '#', label: 'WhatsApp' }
   ];
 
   const containerVariants = {
@@ -59,114 +63,137 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-gray-900 text-white w-[100%]">
-      <div className="w-[85%] mx-auto px-4 sm:px-6 lg:px-8 py-4">
+    <footer className="bg-[#054351] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        {/* Main Footer Content */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="w-[100%] grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-2 text-center md:text-left"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
         >
-          {/* Company Info */}
-          <motion.div variants={itemVariants} className="lg:col-span-2">
-            <div className='flex flex-row  w-[100%] '>
-            <Link href="/">
-            <img src="/logoR111.png" alt="RIII" className="w-[51%] h-[88%]" />
-            </Link>
-            <p className="text-gray-300 mb-2 leading-relaxed">
-              <span className='text-italic font-bold text-[#245FE8]'> " </span> Your trusted partner for all home services. We connect you with verified professionals 
-              to make your life easier and more comfortable <span className='text-italic font-bold text-[#245FE8]'> " </span>
-            </p>
-            </div>
+          {/* Resources Column */}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-bold mb-4">Resources</h3>
+            <ul className="space-y-3">
+              {footerSections[0].links.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-white/90 hover:text-white transition-colors duration-300"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
 
-            <div className="space-y-3">
-              <div className="flex items-center gap-3 justify-center md:justify-start">
-                <HiPhone className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">+971 52 528 8716</span>
+          {/* About us Column */}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-bold mb-4">About us</h3>
+            <ul className="space-y-3">
+              {footerSections[1].links.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-white/90 hover:text-white transition-colors duration-300"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Partners Column */}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-bold mb-4">Partners</h3>
+            <ul className="space-y-3">
+              {footerSections[2].links.map((link) => (
+                <li key={link.name}>
+                  <Link
+                    href={link.href}
+                    className="text-white/90 hover:text-white transition-colors duration-300"
+                  >
+                    {link.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Get in touch Column */}
+          <motion.div variants={itemVariants}>
+            <h3 className="text-lg font-bold mb-4">Get in touch</h3>
+            <div className="space-y-4">
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0 mt-1">
+                  <HiLocationMarker className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-white/90 text-sm leading-relaxed">
+                  31 floor Api Tower sheikh Zayed road, Dubai, UAE
+                </span>
               </div>
-              <div className="flex items-center gap-3 justify-center md:justify-start">
-                <HiMail className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300">r111movers@gmail.com</span>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                  <HiPhone className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-white/90">+971 52 528 8716</span>
               </div>
-              <div className="flex items-center gap-3 justify-center md:justify-start">
-                <HiLocationMarker className="h-5 w-5 text-blue-400" />
-                <span className="text-gray-300 text-capitalize">31 floor Api Tower sheikh Zayed road</span>
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-gray-400 rounded-full flex items-center justify-center flex-shrink-0">
+                  <HiMail className="h-4 w-4 text-white" />
+                </div>
+                <span className="text-white/90">r111movers@gmail.com</span>
               </div>
             </div>
           </motion.div>
-
-          {/* Quick Links */}
-          {footerSections.map((section, index) => (
-            <motion.div key={section.title} variants={itemVariants} className='  text-left'>
-              <h3 className="text-lg font-semibold mb-1">{section.title}</h3>
-              <ul className="space-y-1">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="text-gray-300 hover:text-blue-400 transition-colors duration-300"
-                    >
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </motion.div>
-          ))}
         </motion.div>
 
-        {/* Newsletter Section */}
-        {/* <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={containerVariants}
-          className="border-t border-gray-800 mt-12 pt-12"
-        >
-          <motion.div variants={itemVariants} className="max-w-md mx-auto text-center lg:text-left lg:mx-0">
-            <h3 className="text-xl font-semibold mb-4">Stay Updated</h3>
-            <p className="text-gray-300 mb-6">
-              Get the latest updates on new services and special offers.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg bg-gray-800 border border-gray-700 focus:border-blue-400 focus:outline-none transition-colors"
-              />
-              <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors whitespace-nowrap">
-                Subscribe
-              </button>
-            </div>
-          </motion.div>
-        </motion.div> */}
-
-        {/* Bottom Section */}
+        {/* Bottom Section with Social Media and Legal */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="border-t border-gray-800 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center gap-6"
+          className="border-t border-teal-700 pt-8"
         >
-          <motion.p variants={itemVariants} className="text-gray-400 text-center md:text-left">
-            © 2024 RIII. All rights reserved. Making homes better, one service at a time.
-          </motion.p>
-          
-          <motion.div variants={itemVariants} className="flex items-center gap-6">
-            {socialLinks.map((social, index) => {
-              const Icon = social.icon;
-              return (
-                <a
-                  key={index}
-                  href={social.href}
-                  className={`text-gray-400 ${social.color} transition-colors duration-300 text-xl`}
-                >
-                  <Icon />
-                </a>
-              );
-            })}
+          {/* Social Media Icons */}
+          <motion.div variants={itemVariants} className="flex justify-center mb-6">
+            <div className="flex gap-4">
+              {socialLinks.map((social, index) => {
+                const Icon = social.icon;
+                return (
+                  <a
+                    key={index}
+                    href={social.href}
+                    className="w-10 h-10 bg-teal-800 border-2 border-white rounded-full flex items-center justify-center text-white hover:bg-white hover:text-teal-800 transition-all duration-300"
+                    aria-label={social.label}
+                  >
+                    <Icon className="h-5 w-5" />
+                  </a>
+                );
+              })}
+            </div>
+          </motion.div>
+
+          {/* Legal Text */}
+          <motion.div variants={itemVariants} className="text-center space-y-2">
+            <div className="flex justify-center gap-4 text-sm">
+              <Link href="/terms" className="text-white/90 hover:text-white transition-colors">
+                Terms and Conditions
+              </Link>
+              <span className="text-white/60">|</span>
+              <Link href="/privacy" className="text-white/90 hover:text-white transition-colors">
+                Privacy Policy
+              </Link>
+            </div>
+            <p className="text-white/80 text-sm">
+              RIII is licensed by Dubai Health Authority (DHA) under License No. 8357061. 
+              Copyright © 2013 - 2025
+            </p>
           </motion.div>
         </motion.div>
       </div>
