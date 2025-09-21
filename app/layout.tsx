@@ -11,18 +11,6 @@ export const metadata: Metadata = {
   authors: [{ name: 'RIII Team' }],
   viewport: 'width=device-width, initial-scale=1',
   robots: 'index, follow',
-  openGraph: {
-    title: 'RIII - #1 Super App for All Home Services',
-    description: 'Book trusted professionals for cleaning, repairs, beauty services and more.',
-    url: 'https://riii.com',
-    siteName: 'RIII',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'RIII - #1 Super App for All Home Services',
-    description: 'Book trusted professionals for cleaning, repairs, beauty services and more.',
-  },
 };
 
 export default function RootLayout({
