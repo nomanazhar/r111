@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { HiMail, HiPhone, HiLocationMarker } from 'react-icons/hi';
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaGoogle, FaWhatsapp } from 'react-icons/fa';
+import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin, FaGoogle, FaWhatsapp, FaTiktok } from 'react-icons/fa';
 
 const Footer = () => {
   const footerSections = [
@@ -20,8 +20,8 @@ const Footer = () => {
       title: 'About us',
       links: [
         { name: 'About us', href: '/about' },
-        { name: 'Payment and refund policy', href: '/refund-policy' },
-        { name: 'Careers', href: '/careers' },
+        { name: 'Terms and Conditions', href: '/terms' },
+        { name: 'Privacy Policy', href: '/privacy' },
         { name: 'Contact us', href: '/contact' }
       ]
     },
@@ -34,12 +34,12 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: FaFacebook, href: '#', label: 'Facebook' },
-    { icon: FaInstagram, href: '#', label: 'Instagram' },
-    { icon: FaTwitter, href: '#', label: 'Twitter' },
-    { icon: FaLinkedin, href: '#', label: 'LinkedIn' },
-    { icon: FaGoogle, href: '#', label: 'Google' },
-    { icon: FaWhatsapp, href: '#', label: 'WhatsApp' }
+    { icon: FaFacebook, href: 'https://www.facebook.com/r111movers/', label: 'Facebook' },
+    { icon: FaInstagram, href: 'https://www.instagram.com/r111movers/', label: 'Instagram' },
+    { icon: FaTwitter, href: 'https://x.com/R111Team11683?t=xip3kr1LQRBHyFEeHj7Leg&s=08', label: 'Twitter' },
+    { icon: FaTiktok , href: 'https://www.tiktok.com/@r111.movers?_t=ZS-8zvA9T5ESsC&_r=1', label: 'TikTok' },
+    { icon: FaGoogle, href: 'https://www.google.com/search?q=r111movers.com', label: 'Google' },
+    { icon: FaWhatsapp, href: 'https://wa.me/971525288716', label: 'WhatsApp' }
   ];
 
   const containerVariants = {
@@ -64,17 +64,17 @@ const Footer = () => {
 
   return (
     <footer className="bg-[#054351] text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 flex flex-col items-center justify-center">
         {/* Main Footer Content */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-12 w-[70%] flex items-center justify-center"
         >
           {/* Resources Column */}
-          <motion.div variants={itemVariants}>
+          {/* <motion.div variants={itemVariants}>
             <h3 className="text-lg font-bold mb-4">Resources</h3>
             <ul className="space-y-3">
               {footerSections[0].links.map((link) => (
@@ -88,7 +88,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </motion.div> */}
 
           {/* About us Column */}
           <motion.div variants={itemVariants}>
@@ -108,7 +108,7 @@ const Footer = () => {
           </motion.div>
 
           {/* Partners Column */}
-          <motion.div variants={itemVariants}>
+          {/* <motion.div variants={itemVariants}>
             <h3 className="text-lg font-bold mb-4">Partners</h3>
             <ul className="space-y-3">
               {footerSections[2].links.map((link) => (
@@ -122,7 +122,7 @@ const Footer = () => {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </motion.div> */}
 
           {/* Get in touch Column */}
           <motion.div variants={itemVariants}>
@@ -150,6 +150,7 @@ const Footer = () => {
               </div>
             </div>
           </motion.div>
+
         </motion.div>
 
         {/* Bottom Section with Social Media and Legal */}

@@ -86,7 +86,7 @@ export default function EditBlogModal({
               />
             </div>
             <div >
-              <label className="block text-sm font-medium text-gray-700 mb-1">Hashtags</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
               <input 
                 value={hashtags} 
                 onChange={(e) => setHashtags(e.target.value)} 

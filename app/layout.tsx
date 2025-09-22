@@ -26,6 +26,11 @@ export default function RootLayout({
       </head>
       <body className={`${hanken_grotesk.className} antialiased`}>
         <div id="root">{children}</div>
+        <div className='wa-button fixed bottom-5 right-5'>
+          <a href="https://wa.me/971525288716" target="_blank" className='w-[50px] h-[50px]'>
+            <img src="/whatsapp-icon-free-png.webp" alt="WhatsApp" className='w-[50px] h-[50px]' />
+          </a>
+        </div>
       </body>
     </html>
   );
