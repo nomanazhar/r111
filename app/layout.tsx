@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Hanken_Grotesk } from 'next/font/google';
@@ -24,13 +25,17 @@ export default function RootLayout({
         <meta name="theme-color" content="#2563eb" />
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
       </head>
-      <body className={`${hanken_grotesk.className} antialiased`}>
+      <body cz-shortcut-listen="false" className={`${hanken_grotesk.className} antialiased`}>
         <div id="root">{children}</div>
-        <div className='wa-button fixed bottom-5 right-5'>
-          <a href="https://wa.me/971525288716" target="_blank" className='w-[50px] h-[50px]'>
+
+
+        <div className='wa-button fixed bottom-10 right-10 sm:bottom-10 sm:right-15 md:bottom-10 md:right-15'>
+          <Link href="https://wa.me/971525288716" target="_blank" className='w-[50px] h-[50px]'>
             <img src="/whatsapp-icon-free-png.webp" alt="WhatsApp" className='w-[50px] h-[50px]' />
-          </a>
+          </Link>
         </div>
+
+
       </body>
     </html>
   );

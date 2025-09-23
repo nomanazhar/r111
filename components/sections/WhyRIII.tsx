@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import { HiShieldCheck, HiThumbUp, HiLightningBolt, HiSupport } from 'react-icons/hi';
-import Image from 'next/image';
+// import Image from 'next/image';
 
 const WhyRIII = () => {
   const containerVariants = {
@@ -90,15 +90,19 @@ const WhyRIII = () => {
           ))}
         </motion.div>
       </div>
-      <div className="max-w-8xl h-[30vh] bg-[#38B6FF] px-4 flex items-center justify-center">
-        <motion.div className="blue-card h-full w-[80%] text-center flex items-center justify-center">
-          <motion.div className="w-[30%] text-white font-bold text-center flex items-center justify-center">
-            <motion.img src="/1211.png" alt="R111" width={100} height={100} className='mt-[30%] w-[100%] h-[100%] object-contain flex items-center justify-center' />
+
+
+      <div className="max-w-8xl h-[100%] md:h-[30vh] bg-[#38B6FF] p-4 md:px-4 flex items-center justify-center">
+        <motion.div className="blue-card h-[100%] w-[100%] md:text-left text-center md:flex flex-column items-center justify-center">
+
+          <motion.div className="w-[60%] md:w-[30%] text-center flex items-center md:m-0 m-auto justify-center">
+            <motion.img src="/R111.png" alt="R111" width={100} height={100} className='mt-[5%] w-[60%] h-[60%] object-cover flex items-center justify-center' />
           </motion.div>
-          <motion.div className="w-[60%] text-white text-2xl font-bold text-justify flex flex-col gap-4">
-          <motion.h1 className="text-3xl font-extrabold">The Justlife Promise – Excellence in Every Home</motion.h1>
-          <motion.p className='w-[85%] text-justify text-lg'>At Justlife, we commit to the highest standards of home care. Our trained professionals deliver a superior service experience,  ensuring your home is in expert hands. Your peace of mind is our  promise.
-          </motion.p>
+
+          <motion.div className=" w-[65%] h-[100%] flex flex-col justify-center text-white md:m-0 m-auto gap-4 sm:gap-2 overflow-hidden">
+            <motion.h1 className="text-xl font-extrabold ">The Justlife Promise – Excellence in Every Home</motion.h1>
+            <motion.p className='text-xxl max-w-[700px]'>At Justlife, we commit to the highest standards of home care. Our trained professionals deliver a superior service experience,  ensuring your home is in expert hands. Your peace of mind is our  promise.
+            </motion.p>
           </motion.div>
         </motion.div>
       </div>

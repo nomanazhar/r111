@@ -222,7 +222,7 @@ export default function ContactPageClient() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Email Us</h3>
-              <p className="text-gray-600">info@riii.com</p>
+              <p className="text-gray-600">r111movers@gmail.com</p>
             </div>
 
             <div className="text-center">
@@ -232,7 +232,7 @@ export default function ContactPageClient() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Call Us</h3>
-              <p className="text-gray-600">+971 50 123 4567</p>
+              <p className="text-gray-600">+971 52 528 8716</p>
             </div>
 
             <div className="text-center">
@@ -243,7 +243,7 @@ export default function ContactPageClient() {
                 </svg>
               </div>
               <h3 className="text-lg font-semibold text-gray-900 mb-2">Visit Us</h3>
-              <p className="text-gray-600">Dubai, UAE</p>
+              <p className="text-gray-600">31 floor Api Tower sheikh Zayed road</p>
             </div>
           </motion.div>
         </div>

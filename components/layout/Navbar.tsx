@@ -86,7 +86,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
   };
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 h-[10vh] z-50 transition-all duration-100 ${
+    <nav className={`fixed top-0 left-0 right-0 h-[10vh] z-50 transition-all duration-100 sm:h-[8vh] md:h-[8vh] ${
       isScrolled 
         ? 'bg-white/95 backdrop-blur-sm shadow-md !text-blue-700' 
         : 'backdrop-blur-sm'
@@ -102,8 +102,7 @@ const Navbar = ({ className = '' }: NavbarProps) => {
                   ? 'text-blue-600 hover:text-blue-700' 
                   : 'text-blue-600 hover:text-blue-700'
             }`}>
-              {/* <img src="/12345.png" alt="RIII" className="mt-[7.5%] lg:w-[30%]  w-[100px] h-[45%]" /> */}
-              R111
+              <img src="/logo.png" alt="" className="mt-[2%] lg:w-[30%]  w-[100px] h-[45%]" />
             </Link>
           </div>
 
