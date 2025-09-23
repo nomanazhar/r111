@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Blog } from '@/lib/types';
+import TagInput from '@/components/ui/tag-input';
 
 export default function AddBlogModal({
   isSaving,
@@ -19,7 +20,7 @@ export default function AddBlogModal({
   const [author, setAuthor] = useState('RIII Team');
   const [published, setPublished] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState('');
+  const [tags, setTags] = useState<string[]>([]);
   async function uploadSelected(file: File, folder: string) {
     const form = new FormData();
     form.append('file', file);
@@ -78,12 +79,12 @@ export default function AddBlogModal({
               />
             </div>
             <div >
-              <label className='block text-sm font-medium text-gray-700 mb-1'>hashtags</label>
-              <input 
-                value={hashtags} 
-                onChange={(e) => setHashtags(e.target.value)} 
-                className="w-full px-3 py-2 border rounded-lg" 
-                placeholder="Enter hashtags"
+              <label className='block text-sm font-medium text-gray-700 mb-1'>Tags</label>
+              <TagInput 
+                tags={tags}
+                onChange={setTags}
+                placeholder="Type tags and press Enter or comma to add"
+                className="w-full"
               />
             </div>
           </div>
@@ -125,7 +126,7 @@ export default function AddBlogModal({
                   image: imageUrl, 
                   author, 
                   published,
-                  hashtags
+                  hashtags: tags.join(', ')
                 } as Partial<Blog>);
               } catch (e: any) {
                 setError(e?.message || 'Failed to save');

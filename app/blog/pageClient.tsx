@@ -103,7 +103,16 @@ export default function BlogPageClient() {
                         </h3>
                         <div className="flex items-center justify-between">
                           <span className="text-sm text-gray-500">By {blog.author}</span>
-                          <span className="text-sm text-gray-500">{blog.hashtags}</span>
+                          <div className="flex flex-wrap gap-1">
+                            {blog.hashtags && blog.hashtags.split(/[,#]/).map((tag, index) => {
+                              const trimmedTag = tag.trim();
+                              return trimmedTag ? (
+                                <span key={index} className="px-2 py-0.5 text-xs bg-blue-50 text-blue-700 rounded">
+                                  {trimmedTag}
+                                </span>
+                              ) : null;
+                            })}
+                          </div>
                           <span className="text-blue-600 font-medium">Read more →</span>
                         </div>
                       </div>

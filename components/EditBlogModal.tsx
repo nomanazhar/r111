@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import type { Blog } from '@/lib/types';
+import TagInput from '@/components/ui/tag-input';
 
 export default function EditBlogModal({
   blog,
@@ -21,7 +22,11 @@ export default function EditBlogModal({
   const [author, setAuthor] = useState(blog.author);
   const [published, setPublished] = useState(blog.published);
   const [error, setError] = useState<string | null>(null);
-  const [hashtags, setHashtags] = useState(blog.hashtags || '');
+  const [tags, setTags] = useState<string[]>(
+    blog.hashtags 
+      ? blog.hashtags.split(/[,#]/).map(t => t.trim()).filter(t => t.length > 0)
+      : []
+  );
   async function uploadSelected(file: File, folder: string) {
     const form = new FormData();
     form.append('file', file);
@@ -87,11 +92,11 @@ export default function EditBlogModal({
             </div>
             <div >
               <label className="block text-sm font-medium text-gray-700 mb-1">Tags</label>
-              <input 
-                value={hashtags} 
-                onChange={(e) => setHashtags(e.target.value)} 
-                className="w-full px-3 py-2 border rounded-lg" 
-                placeholder="Enter hashtags"
+              <TagInput 
+                tags={tags}
+                onChange={setTags}
+                placeholder="Type tags and press Enter or comma to add"
+                className="w-full"
               />
             </div>
           </div>
@@ -133,7 +138,7 @@ export default function EditBlogModal({
                   image: imageUrl, 
                   author, 
                   published,
-                  hashtags
+                  hashtags: tags.join(', ')
                 } as Partial<Blog>);
               } catch (e: any) {
                 setError(e?.message || 'Failed to save');

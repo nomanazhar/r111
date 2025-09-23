@@ -138,9 +138,17 @@ export default function BlogPostPageClient() {
                   <HiCalendar className="h-4 w-4" />
                   <span>{blog.created_at ? new Date(blog.created_at).toLocaleDateString() : 'N/A'}</span>
                 </div>
-                <div className="flex items-center gap-1">
-                 
-                  <span>{blog.hashtags}</span>
+                <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap gap-1">
+                    {blog.hashtags && blog.hashtags.split(/[,#]/).map((tag, index) => {
+                      const trimmedTag = tag.trim();
+                      return trimmedTag ? (
+                        <span key={index} className="px-2 py-0.5 text-xs bg-blue-50 text-blue-700 rounded">
+                          {trimmedTag}
+                        </span>
+                      ) : null;
+                    })}
+                  </div>
                 </div>
               </motion.div>
 
@@ -148,9 +156,6 @@ export default function BlogPostPageClient() {
               <motion.h1 variants={itemVariants} className="text-4xl font-bold text-gray-900 mb-6">
                 {blog.title}
               </motion.h1>
-              <motion.p variants={itemVariants} className="text-sm text-gray-500 mb-6">
-                {blog.hashtags}
-              </motion.p>
 
 
               {/* Content */}

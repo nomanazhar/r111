@@ -96,12 +96,12 @@ const WhyRIII = () => {
         <motion.div className="blue-card h-[100%] w-[100%] md:text-left text-center md:flex flex-column items-center justify-center">
 
           <motion.div className="w-[60%] md:w-[30%] text-center flex items-center md:m-0 m-auto justify-center">
-            <motion.img src="/R111.png" alt="R111" width={100} height={100} className='mt-[5%] w-[60%] h-[60%] object-cover flex items-center justify-center' />
+            <motion.img src="/R111.png" alt="R111" width={100} height={100} className='mt-[5%] w-[50%] h-[60%] object-cover flex items-center justify-center' />
           </motion.div>
 
           <motion.div className=" w-[65%] h-[100%] flex flex-col justify-center text-white md:m-0 m-auto gap-4 sm:gap-2 overflow-hidden">
-            <motion.h1 className="text-xl font-extrabold ">The Justlife Promise – Excellence in Every Home</motion.h1>
-            <motion.p className='text-xxl max-w-[700px]'>At Justlife, we commit to the highest standards of home care. Our trained professionals deliver a superior service experience,  ensuring your home is in expert hands. Your peace of mind is our  promise.
+            <motion.h1 className="text-xl font-extrabold ">The R111 Mover Promise – Care & Quality in Every Move            </motion.h1>
+            <motion.p className='text-xxl max-w-[900px]'>At R111 Mover, we believe in giving the best moving and home service experience. Our skilled team handles your belongings with care and professionalism, making your move safe and stress-free. Your trust and peace of mind are always our priority.
             </motion.p>
           </motion.div>
         </motion.div>
