@@ -29,7 +29,7 @@ export default function RootLayout({
         <div id="root">{children}</div>
 
 
-        <div className='wa-button absolute z-999 bottom-10 right-10 '>
+        <div className='wa-button flex absolute z-9999 xl:bottom-10 xl:right-10 sm:bottom-15 sm:right-15 '>
           <Link href="https://wa.me/971525288716" target="_blank" className='w-[50px] h-[50px]'>
             <img src="/whatsapp-icon-free-png.webp" alt="WhatsApp" className='w-[50px] h-[50px]' />
           </Link>
