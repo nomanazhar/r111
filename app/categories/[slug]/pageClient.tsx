@@ -117,10 +117,21 @@ export default function CategoryPageClient({
                     className="bg-white rounded-xl md:rounded-2xl shadow-md md:shadow-lg hover:shadow-xl md:hover:shadow-2xl transition-all duration-300 overflow-hidden"
                   >
                     <Link href={`/services/${service.id}`}>
-                      <div className="relative h-32 md:h-48">
-                        <Image src={service.image} alt={service.name} fill className="object-cover hover:scale-105 transition-transform duration-300" />
-                        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-500 text-white px-2 py-1 md:px-3 md:py-1 rounded-full font-semibold text-xs md:text-sm">SAVE {service.discount}%</div>
+                      <div className="relative w-full aspect-[16/9] overflow-hidden">
+                        <Image
+                          src={service.image}
+                          alt={service.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, 
+                           (max-width: 1024px) 50vw, 
+                           33vw"
+                          className="object-cover hover:scale-105 transition-transform duration-300"
+                        />
+                        <div className="absolute top-2 right-2 md:top-4 md:right-4 bg-green-500 text-white px-2 py-1 md:px-3 md:py-1 rounded-full font-semibold text-xs md:text-sm">
+                          SAVE {service.discount}%
+                        </div>
                       </div>
+
                       <div className="p-2 md:p-4">
                         <h3 className="text-sm md:text-xl font-bold text-gray-900 mb-1 md:mb-2 hover:text-blue-600 transition-colors line-clamp-1 md:line-clamp-none">{service.name}</h3>
                         <p className="text-gray-600 mb-2 leading-relaxed line-clamp-2 text-xs md:text-sm">{service.description}</p>
