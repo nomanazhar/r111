@@ -42,7 +42,7 @@ export default function AdminPageClient() {
 
   useEffect(() => {
     void refreshAll();
-    
+
     // Check email configuration
     const checkEmailConfig = async () => {
       try {
@@ -56,7 +56,7 @@ export default function AdminPageClient() {
         setEmailConfigured(false);
       }
     };
-    
+
     checkEmailConfig();
   }, []);
 
@@ -105,7 +105,7 @@ export default function AdminPageClient() {
         fetch('/api/users').then((r) => r.json()),
         fetch('/api/blogs').then((r) => r.json()),
       ]);
-      
+
       // Handle each API response individually to prevent one failure from affecting others
       if (servicesRes.status === 'fulfilled' && Array.isArray(servicesRes.value)) {
         setServices(servicesRes.value);
@@ -113,35 +113,35 @@ export default function AdminPageClient() {
         console.warn('Services API failed or returned invalid data:', servicesRes);
         setServices([]);
       }
-      
+
       if (categoriesRes.status === 'fulfilled' && Array.isArray(categoriesRes.value)) {
         setCategories(categoriesRes.value);
       } else {
         console.warn('Categories API failed or returned invalid data:', categoriesRes);
         setCategories([]);
       }
-      
+
       if (locationsRes.status === 'fulfilled' && Array.isArray(locationsRes.value)) {
         setLocations(locationsRes.value);
       } else {
         console.warn('Locations API failed or returned invalid data:', locationsRes);
         setLocations([]);
       }
-      
+
       if (ordersRes.status === 'fulfilled' && Array.isArray(ordersRes.value)) {
         setOrders(ordersRes.value);
       } else {
         console.warn('Orders API failed or returned invalid data:', ordersRes);
         setOrders([]);
       }
-      
+
       if (usersRes.status === 'fulfilled' && Array.isArray(usersRes.value)) {
         setUsers(usersRes.value);
       } else {
         console.warn('Users API failed or returned invalid data:', usersRes);
         setUsers([]);
       }
-      
+
       if (blogsRes.status === 'fulfilled' && Array.isArray(blogsRes.value)) {
         setBlogs(blogsRes.value);
       } else {
@@ -164,21 +164,21 @@ export default function AdminPageClient() {
     if (!Array.isArray(orders) || !orderId || !newStatus) return;
     const order = orders.find((o) => o?.id === orderId);
     if (!order) return;
-    
+
     try {
       const res = await fetch('/api/orders', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: orderId, status: newStatus }),
       });
-      
+
       if (res.ok) {
         const updated = await res.json();
         setOrders((prev) => {
           if (!Array.isArray(prev)) return [updated];
           return prev.map((o) => (o?.id === orderId ? updated : o));
         });
-        
+
         // Show success message for email notifications
         if (newStatus === 'confirmed') {
           if (updated.emailSent) {
@@ -193,7 +193,7 @@ export default function AdminPageClient() {
         } else {
           alert(`Order status updated to ${newStatus}`);
         }
-        
+
         // Log the full response for debugging
         console.log('Order update response:', updated);
       } else {
@@ -248,7 +248,7 @@ export default function AdminPageClient() {
       try {
         const j = await res.json();
         if (j?.error) msg = j.error;
-      } catch {}
+      } catch { }
       throw new Error(msg);
     }
     const created = await res.json();
@@ -335,10 +335,10 @@ export default function AdminPageClient() {
     setIsSaving(false);
     if (!res.ok) return;
     const updated = await res.json();
-            setServices((prev) => {
-          if (!Array.isArray(prev)) return [updated];
-          return prev.map((s) => (s?.id === editingService.id ? updated : s));
-        });
+    setServices((prev) => {
+      if (!Array.isArray(prev)) return [updated];
+      return prev.map((s) => (s?.id === editingService.id ? updated : s));
+    });
     setIsEditServiceOpen(false);
     setEditingService(null);
   }
@@ -357,14 +357,14 @@ export default function AdminPageClient() {
       try {
         const j = await res.json();
         if (j?.error) msg = j.error;
-      } catch {}
+      } catch { }
       throw new Error(msg);
     }
     const updated = await res.json();
-            setCategories((prev) => {
-          if (!Array.isArray(prev)) return [updated];
-          return prev.map((c) => (c?.id === editingCategory.id ? updated : c));
-        });
+    setCategories((prev) => {
+      if (!Array.isArray(prev)) return [updated];
+      return prev.map((c) => (c?.id === editingCategory.id ? updated : c));
+    });
     setIsEditCategoryOpen(false);
     setEditingCategory(null);
   }
@@ -392,7 +392,7 @@ export default function AdminPageClient() {
       try {
         const j = await res.json();
         if (j?.error) msg = j.error;
-      } catch {}
+      } catch { }
       alert(msg);
       return;
     }
@@ -432,7 +432,7 @@ export default function AdminPageClient() {
       try {
         const j = await res.json();
         if (j?.error) msg = j.error;
-      } catch {}
+      } catch { }
       alert(msg);
       return;
     }
@@ -488,7 +488,7 @@ export default function AdminPageClient() {
             <motion.div variants={itemVariants} className="mb-8">
               <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Dashboard</h1>
               <p className="text-gray-600">Manage your RIII platform</p>
-              
+
               {/* Email Status Indicator */}
               {/* {emailConfigured !== null && (
                 <div className={`mt-4 p-3 rounded-lg ${emailConfigured ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
@@ -524,11 +524,10 @@ export default function AdminPageClient() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 whitespace-nowrap ${
-                        activeTab === tab.id
+                      className={`py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200 whitespace-nowrap ${activeTab === tab.id
                           ? 'border-blue-500 text-blue-600'
                           : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
-                      }`}
+                        }`}
                     >
                       {tab.name}
                     </button>
@@ -578,15 +577,14 @@ export default function AdminPageClient() {
                             <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order.date}</td>
                             <td className="px-6 py-4 whitespace-nowrap">
                               <span
-                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                  order.status === 'completed'
+                                className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${order.status === 'completed'
                                     ? 'bg-green-100 text-green-800'
                                     : order.status === 'pending'
-                                    ? 'bg-yellow-100 text-yellow-800'
-                                    : order.status === 'confirmed'
-                                    ? 'bg-blue-100 text-blue-800'
-                                    : 'bg-gray-100 text-gray-800'
-                                }`}
+                                      ? 'bg-yellow-100 text-yellow-800'
+                                      : order.status === 'confirmed'
+                                        ? 'bg-blue-100 text-blue-800'
+                                        : 'bg-gray-100 text-gray-800'
+                                  }`}
                               >
                                 {order.status}
                               </span>
@@ -606,7 +604,7 @@ export default function AdminPageClient() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-xl font-bold text-gray-900">All Orders</h2>
                   <div className="flex gap-2">
-                    <button 
+                    <button
                       onClick={refreshAll}
                       className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                     >
@@ -648,15 +646,14 @@ export default function AdminPageClient() {
                             <select
                               value={order.status}
                               onChange={(e) => handleStatusChange(order.id, e.target.value as Order['status'])}
-                              className={`text-xs font-semibold rounded-full ${
-                                order.status === 'completed'
+                              className={`text-xs font-semibold rounded-full ${order.status === 'completed'
                                   ? 'bg-green-100 text-green-800'
                                   : order.status === 'pending'
-                                  ? 'bg-yellow-100 text-yellow-800'
-                                  : order.status === 'confirmed'
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}
+                                    ? 'bg-yellow-100 text-yellow-800'
+                                    : order.status === 'confirmed'
+                                      ? 'bg-blue-100 text-blue-800'
+                                      : 'bg-gray-100 text-gray-800'
+                                }`}
                             >
                               <option value="pending">Pending</option>
                               <option value="confirmed">Confirmed</option>
@@ -701,7 +698,7 @@ export default function AdminPageClient() {
                       </div>
                       <div className="flex justify-between">
                         <button onClick={() => handleEditServiceClick(service)} className="text-blue-600 hover:text-blue-800 text-sm font-medium"><HiPencil className="inline h-4 w-4 mr-1" />Edit</button>
-                         <button onClick={() => handleDeleteService(service.id)} className="text-red-600 hover:text-red-800 text-sm font-medium"><HiTrash className="inline h-4 w-4 mr-1" />Delete</button>
+                        <button onClick={() => handleDeleteService(service.id)} className="text-red-600 hover:text-red-800 text-sm font-medium"><HiTrash className="inline h-4 w-4 mr-1" />Delete</button>
                       </div>
                     </div>
                   ))}
@@ -747,48 +744,48 @@ export default function AdminPageClient() {
               </motion.div>
             )}
 
-              {activeTab === 'locations' && (
-                <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
-                  <div className="flex justify-between items-center mb-6">
-                    <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
-                    <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
-                      <HiPlus className="h-5 w-5" />
-                      Add Location
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {locations?.map((l) => (
-                      <div key={l.id} className="border border-gray-200 rounded-lg p-4">
-                        {l.image && (
-                          <div className="mb-2">
-                            <img src={l.image} alt={l.name} className="w-full h-28 object-cover rounded" />
-                          </div>
-                        )}
-                        <h4 className="font-bold text-gray-900">{l.name}</h4>
-                        <p className="text-gray-600 text-sm">{l.area ? `${l.area}, ` : ''}{l.city}</p>
-                        <div className="flex justify-end mt-3">
-                          <button onClick={() => handleDeleteLocation(l.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
-                            <HiTrash className="inline h-4 w-4 mr-1" />Delete
-                          </button>
+            {activeTab === 'locations' && (
+              <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6 hidden">
+                <div className="flex justify-between items-center mb-6">
+                  <h3 className="text-xl font-bold text-gray-900">Locations Management</h3>
+                  <button onClick={() => setIsAddLocationOpen(true)} className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium flex items-center gap-2 transition-colors">
+                    <HiPlus className="h-5 w-5" />
+                    Add Location
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {locations?.map((l) => (
+                    <div key={l.id} className="border border-gray-200 rounded-lg p-4">
+                      {l.image && (
+                        <div className="mb-2">
+                          <img src={l.image} alt={l.name} className="w-full h-28 object-cover rounded" />
                         </div>
+                      )}
+                      <h4 className="font-bold text-gray-900">{l.name}</h4>
+                      <p className="text-gray-600 text-sm">{l.area ? `${l.area}, ` : ''}{l.city}</p>
+                      <div className="flex justify-end mt-3">
+                        <button onClick={() => handleDeleteLocation(l.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">
+                          <HiTrash className="inline h-4 w-4 mr-1" />Delete
+                        </button>
                       </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
 
             {activeTab === 'users' && (
               <motion.div variants={itemVariants} className="bg-white rounded-xl shadow-lg p-6">
                 <div className="flex justify-between items-center mb-6">
                   <h3 className="text-xl font-bold text-gray-900">Users Management</h3>
-                  <button 
+                  <button
                     onClick={refreshAll}
                     className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
                   >
                     Refresh
                   </button>
                 </div>
-                
+
                 <div className="overflow-x-auto">
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
@@ -814,13 +811,12 @@ export default function AdminPageClient() {
                             {user.phone}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                              user.source === 'contact_form'
+                            <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${user.source === 'contact_form'
                                 ? 'bg-blue-100 text-blue-800'
                                 : user.source === 'order'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-purple-100 text-purple-800'
-                            }`}>
+                                  ? 'bg-green-100 text-green-800'
+                                  : 'bg-purple-100 text-purple-800'
+                              }`}>
                               {user.source.replace('_', ' ')}
                             </span>
                           </td>
@@ -836,7 +832,7 @@ export default function AdminPageClient() {
                       ))}
                     </tbody>
                   </table>
-                  
+
                   {(!users || users.length === 0) && (
                     <div className="text-center py-8 text-gray-500">
                       No users found. Contact form submissions will appear here.
@@ -855,7 +851,7 @@ export default function AdminPageClient() {
                     Add Blog Post
                   </button>
                 </div>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {blogs?.map((blog) => (
                     <div key={blog.id} className="border border-gray-200 rounded-lg p-4">
@@ -889,7 +885,7 @@ export default function AdminPageClient() {
                     </div>
                   ))}
                 </div>
-                
+
                 {(!blogs || blogs.length === 0) && (
                   <div className="text-center py-8 text-gray-500">
                     No blog posts found. Create your first blog post to get started.
@@ -1068,6 +1064,7 @@ function AddServiceModal({
   );
 }
 
+// ...existing code...
 function AddCategoryModal({
   isSaving,
   onClose,
@@ -1079,10 +1076,10 @@ function AddCategoryModal({
 }) {
   const [name, setName] = useState('');
   const [slug, setSlug] = useState('');
-  // icon removed per new schema
   const [image, setImage] = useState('');
-  // iconFile removed
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [bannerImage, setBannerImage] = useState(''); // <-- NEW STATE
+  const [bannerImageFile, setBannerImageFile] = useState<File | null>(null); // <-- NEW STATE
   const [description, setDescription] = useState('');
   const [error, setError] = useState<string | null>(null);
 
@@ -1128,6 +1125,10 @@ function AddCategoryModal({
             <input type="file" accept="image/*" onChange={(e) => setImageFile(e.target.files?.[0] || null)} className="w-full" />
           </div>
           <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">Banner Image (upload)</label>
+            <input type="file" accept="image/*" onChange={(e) => setBannerImageFile(e.target.files?.[0] || null)} className="w-full" />
+          </div>
+          <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
             <textarea value={description} onChange={(e) => setDescription(e.target.value)} className="w-full px-3 py-2 border rounded-lg" rows={3} />
           </div>
@@ -1144,14 +1145,15 @@ function AddCategoryModal({
                 if (imageFile) {
                   imageUrl = await uploadSelected(imageFile, 'categories/images');
                 }
+                let bannerImageUrl = bannerImage;
+                if (bannerImageFile) {
+                  bannerImageUrl = await uploadSelected(bannerImageFile, 'categories/banner');
+                }
                 if (!name || !slug) {
                   setError('Name and slug are required');
                   return;
                 }
-                
-
-                
-                await onSave({ name, slug, image: imageUrl, description } as Partial<Category>);
+                await onSave({ name, slug, image: imageUrl, banner_image: bannerImageUrl, description } as Partial<Category>);
               } catch (e: any) {
                 setError(e?.message || 'Failed to save');
               }
@@ -1165,6 +1167,7 @@ function AddCategoryModal({
     </div>
   );
 }
+// ...existing code...
 
 function AddLocationModal({
   isSaving,
@@ -1383,9 +1386,9 @@ function EditCategoryModal({
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
-            <input 
-              value={slug} 
-              onChange={(e) => setSlug(e.target.value)} 
+            <input
+              value={slug}
+              onChange={(e) => setSlug(e.target.value)}
               className="w-full px-3 py-2 border rounded-lg"
             />
             {hasAssociatedServices && (

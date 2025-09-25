@@ -61,7 +61,7 @@ export default function CategoryPageClient({
         {/* Fullscreen responsive background image */}
         <div className="absolute inset-0">
           <Image
-            src={category.image}
+            src={category.banner_image}
             alt={category.name}
             fill
             priority
