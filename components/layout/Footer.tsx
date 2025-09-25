@@ -34,10 +34,10 @@ const Footer = () => {
   ];
 
   const socialLinks = [
-    { icon: FaFacebook, href: 'https://www.facebook.com/r111movers/', label: 'Facebook' },
+    { icon: FaFacebook, href: 'https://www.facebook.com/profile.php?id=61580245816985', label: 'Facebook' },
     { icon: FaInstagram, href: 'https://www.instagram.com/r111movers/', label: 'Instagram' },
     { icon: FaTwitter, href: 'https://x.com/R111Team11683?t=xip3kr1LQRBHyFEeHj7Leg&s=08', label: 'Twitter' },
-    { icon: FaTiktok , href: 'https://www.tiktok.com/@r111.movers?_t=ZS-8zvA9T5ESsC&_r=1', label: 'TikTok' },
+    { icon: FaTiktok, href: 'https://www.tiktok.com/@r111.movers?_t=ZS-8zvA9T5ESsC&_r=1', label: 'TikTok' },
     { icon: FaGoogle, href: 'https://www.google.com/search?q=r111movers.com', label: 'Google' },
     { icon: FaWhatsapp, href: 'https://wa.me/971525288716', label: 'WhatsApp' }
   ];
@@ -55,8 +55,8 @@ const Footer = () => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     }
@@ -192,7 +192,7 @@ const Footer = () => {
               </Link>
             </div>
             <p className="text-white/80 text-sm">
-              RIII is licensed by Dubai Health Authority (DHA) under License No. 8357061. 
+              RIII is licensed by Dubai Health Authority (DHA) under License No. 8357061.
               Copyright © 2013 - 2025
             </p>
           </motion.div>

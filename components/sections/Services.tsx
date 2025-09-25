@@ -67,8 +67,8 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
 
   const itemVariants = {
     hidden: { opacity: 0, x: -20 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       x: 0,
       transition: { duration: 0.5 }
     }
@@ -89,7 +89,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
           className="text-center mb-10"
         >
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-1">
-            Popular <span className="text-[#245FE8]">Services</span>
+            Popular <span>Services</span>
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">
             Book our most requested services from verified professionals
@@ -99,7 +99,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
         <div className="space-y-2 capitalize">
           {liveCategories.slice(0, 10).map((category) => {
             const categoryServices = getServicesByCategory(category.slug);
-            
+
             if (categoryServices.length === 0) return null;
 
             return (
@@ -113,7 +113,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
               >
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2">
                   <div className="flex items-center gap-4 mb-1 sm:mb-0">
-                    
+
                     <div>
                       <h3 className="text-2xl font-bold text-gray-900 mb-3">{category.name}</h3>
                       {/* <p className="text-gray-600">{category.description}</p> */}
@@ -133,24 +133,28 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                     <motion.div
                       key={service.id}
                       variants={itemVariants}
-                      whileHover={{ 
+                      whileHover={{
                         scale: 1.03,
                         transition: { duration: 0.2 }
                       }}
                       className="bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden"
                     >
                       <Link href={`/services/${service.id}`}>
-                        <div className="relative h-32">
+                        <div className="relative w-full aspect-[16/9] overflow-hidden">
                           <Image
                             src={service.image}
                             alt={service.name}
                             fill
+                            sizes="(max-width: 640px) 100vw, 
+           (max-width: 1024px) 50vw, 
+           33vw"
                             className="object-cover hover:scale-105 transition-transform duration-300"
                           />
                           <div className="absolute top-2 right-3 bg-green-500 text-white px-2 py-1 rounded-full text-sm font-semibold">
-                           SAVE {service.discount}% 
+                            SAVE {service.discount}%
                           </div>
                         </div>
+
                         <div className="p-1">
                           <h4 className="font-bold text-gray-900 mb-1  hover:text-blue-600 transition-colors">
                             {service.name}

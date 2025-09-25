@@ -56,16 +56,16 @@ const Categories = ({ categories }: { categories: Category[] }) => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30, scale: 0.9 },
-    visible: { 
-      opacity: 1, 
-      y: 0, 
+    visible: {
+      opacity: 1,
+      y: 0,
       scale: 1,
       transition: { duration: 0.5 }
     }
   };
 
   return (
-      <section id="categories" className="min-h-[70vh] py-10 bg-gradient-to-br from-gray-50 to-blue-50">
+    <section id="categories" className="min-h-[70vh] py-10 bg-gradient-to-br from-gray-50 to-blue-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div
           initial="hidden"
@@ -74,13 +74,13 @@ const Categories = ({ categories }: { categories: Category[] }) => {
           variants={containerVariants}
           className="text-center mb-8"
         >
-          <motion.h2 
+          <motion.h2
             className="text-4xl md:text-5xl font-bold text-gray-900 mb-2"
             variants={itemVariants}
           >
-            Our <span className="text-[#245FE8]">Categories</span>
+            Our <span>Categories</span>
           </motion.h2>
-          <motion.p 
+          <motion.p
             className="text-xl text-gray-600 max-w-3xl mx-auto"
             variants={itemVariants}
           >
@@ -99,8 +99,8 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             <motion.div
               key={category.id}
               variants={itemVariants}
-              whileHover={{ 
-                scale: 1.05, 
+              whileHover={{
+                scale: 1.05,
                 y: -10,
                 transition: { duration: 0.3 }
               }}
@@ -108,15 +108,19 @@ const Categories = ({ categories }: { categories: Category[] }) => {
             >
               <Link href={`/categories/${category.slug}`}>
                 <div className="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-500 overflow-hidden h-full ">
-                  <div className="relative h-32 overflow-hidden">
+                  <div className="relative w-full aspect-[16/9] overflow-hidden">
                     <Image
                       src={category.image}
                       alt={category.name}
                       fill
+                      sizes="(max-width: 640px) 100vw, 
+           (max-width: 1024px) 50vw, 
+           33vw"
                       className="object-cover group-hover:scale-110 transition-transform duration-500"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
                   </div>
+
                   <div className="p-2">
                     <h3 className="text-xl capitalize font-bold text-gray-900 mb-1 group-hover:text-blue-600 transition-colors">
                       {category.name}

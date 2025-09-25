@@ -46,8 +46,8 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
 
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { 
-      opacity: 1, 
+    visible: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     }
@@ -57,9 +57,8 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
     return [...Array(5)].map((_, index) => (
       <HiStar
         key={index}
-        className={`h-5 w-5 ${
-          index < rating ? 'text-yellow-400' : 'text-gray-300'
-        }`}
+        className={`h-5 w-5 ${index < rating ? 'text-yellow-400' : 'text-gray-300'
+          }`}
       />
     ));
   };
@@ -75,7 +74,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
         >
           <motion.div className="text-center mb-2" variants={itemVariants}>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">
-              What Our <span className="text-[#245FE8]">Customers</span> Say
+              What Our <span>Customers</span> Say
             </h2>
             <p className="text-xl text-gray-600 max-w-3xl mx-auto">
               Don't just take our word for it - hear from thousands of satisfied customers
@@ -97,7 +96,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
               <motion.div
                 key={review.id}
                 variants={itemVariants}
-                whileHover={{ 
+                whileHover={{
                   scale: 1.05,
                   transition: { duration: 0.2 }
                 }}
@@ -141,7 +140,7 @@ const Reviews = ({ reviews }: { reviews: Review[] }) => {
             ))}
           </div>
 
-          <motion.div 
+          <motion.div
             className="text-center mt-6"
             variants={itemVariants}
           >

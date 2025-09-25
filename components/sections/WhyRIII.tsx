@@ -60,7 +60,7 @@ const WhyRIII = () => {
           className="text-center mb-6"
         >
           <motion.h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2" variants={itemVariants}>
-            Why choose <span className="text-[#245FE8]">RIII</span>
+            Why choose <span>RIII</span>
           </motion.h2>
           <motion.p className="text-xl text-gray-600 max-w-3xl mx-auto" variants={itemVariants}>
             Reliable professionals, transparent pricing, and delightful experiences—every single time.
