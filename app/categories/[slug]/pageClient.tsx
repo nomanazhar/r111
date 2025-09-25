@@ -59,17 +59,17 @@ export default function CategoryPageClient({
 
       <section className="pt-[10vh] pb-20 relative overflow-hidden">
         {/* Fullscreen responsive background image */}
-        <div className="absolute inset-0">
-          <Image
+        <motion.div className="absolute inset-0">
+          <motion.img>
             src={category.banner_image}
             alt={category.name}
             fill
             priority
             sizes="100vw"
             className="object-cover"
-          />
+            </motion.img>
           <div className="absolute inset-0 bg-black/20" />
-        </div>
+        </motion.div>
 
         {/* Content overlay */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

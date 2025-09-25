@@ -192,8 +192,7 @@ const Footer = () => {
               </Link>
             </div>
             <p className="text-white/80 text-sm">
-              RIII is licensed by Dubai Health Authority (DHA) under License No. 8357061.
-              Copyright © 2013 - 2025
+              RIII is licensed by Dubai Health Authority (DHA) 
             </p>
           </motion.div>
         </motion.div>

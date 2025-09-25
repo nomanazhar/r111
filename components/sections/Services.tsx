@@ -13,10 +13,10 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
 
   // Function to truncate description to 100 characters
   const truncateDescription = (description: string) => {
-    if (description.length <= 100) {
+    if (description.length <=50) {
       return description;
     }
-    return description.substring(0, 100) + '...';
+    return description.substring(0,50) + '...';
   };
 
   useEffect(() => {
@@ -169,7 +169,7 @@ const Services = ({ services, categories }: { services: Service[]; categories: C
                             </div>
                             <div className="flex items-center gap-1 text-gray-500">
                               <HiClock className="h-4 w-4" />
-                              <span>{service.duration}</span>
+                              {/* <span>{service.duration}</span> */}
                             </div>
                           </div>
                         </div>
