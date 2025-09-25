@@ -14,19 +14,16 @@ const Locations = ({ locations }: { locations: Location[] }) => {
   const getImagePath = (imageUrl: string) => {
     // If it's already a local path (starts with /), return as is
     if (imageUrl.startsWith('/')) {
-      console.log('Using local path:', imageUrl);
       return imageUrl;
     }
 
     // If it's an external URL, return as is
     if (imageUrl.startsWith('http')) {
-      console.log('Using external URL:', imageUrl);
       return imageUrl;
     }
 
     // If it's just a filename, add the / prefix
     const localPath = `/${imageUrl}`;
-    console.log('Converting filename to local path:', localPath);
     return localPath;
   };
 

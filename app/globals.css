@@ -16,6 +16,26 @@
     --background-end-rgb: 0, 0, 0;
   }
 }
+.wa-button{
+  animation: slideInFromRight 1.6s ease-out forwards;
+  opacity:0;
+}
+.wa-button:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease;
+}
+
+@keyframes slideInFromRight {
+  from {
+    transform: translateX(-3vw);
+    transform: translateY(5vh);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
 @layer base {
   :root {
