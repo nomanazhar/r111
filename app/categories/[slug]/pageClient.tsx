@@ -1,7 +1,6 @@
 'use client';
-
-import { motion } from 'framer-motion';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import { HiArrowLeft, HiStar, HiClock } from 'react-icons/hi';
 import Navbar from '@/components/layout/Navbar';
@@ -60,14 +59,26 @@ export default function CategoryPageClient({
       <section className="pt-[10vh] pb-20 relative overflow-hidden">
         {/* Fullscreen responsive background image */}
         <motion.div className="absolute inset-0">
-          <motion.img>
-            src={category.banner_image}
-            alt={category.name}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-            </motion.img>
+          {category?.banner_image ? (
+            <Image
+              src={category.banner_image}
+              alt={category.name || 'Category banner'}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+              unoptimized={category.banner_image.startsWith('http')}
+            />
+          ) : (
+            <Image
+              src="/1211.png"
+              alt="Default banner"
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover"
+            />
+          )}
           <div className="absolute inset-0 bg-black/20" />
         </motion.div>
 

@@ -10,14 +10,25 @@ export default async function CategoryPage({ params }: { params: { slug: string 
   // Decode the slug to handle special characters like &, +, etc.
   const decodedSlug = decodeURIComponent(params.slug);
 
+  // Make parallel API calls to fetch all required data
   const [
     { data: categories },
     { data: services },
-    { data: locations },
+    { data: locations }
   ] = await Promise.all([
-    supabase.from('categories').select('*').eq('slug', decodedSlug).limit(1),
-    supabase.from('services').select('*').eq('category', decodedSlug),
-    supabase.from('locations').select('*').order('id'),
+    supabase
+      .from('categories')
+      .select('*')
+      .eq('slug', decodedSlug)
+      .limit(1),
+    supabase
+      .from('services')
+      .select('*')
+      .eq('category', decodedSlug),
+    supabase
+      .from('locations')
+      .select('*')
+      .order('id')
   ]);
 
   const category = (categories as Category[] | null)?.[0];

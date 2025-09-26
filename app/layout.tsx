@@ -2,6 +2,7 @@ import Link from 'next/link';
 import './globals.css';
 import type { Metadata } from 'next';
 import { Hanken_Grotesk } from 'next/font/google';
+import Image from 'next/image';
 
 const hanken_grotesk = Hanken_Grotesk({ subsets: ['latin'] });
 
@@ -29,9 +30,15 @@ export default function RootLayout({
         <div id="root">{children}</div>
 
 
-        <div className='wa-button flex absolute z-9999 xl:bottom-10 xl:right-10 sm:bottom-15 sm:right-15 '>
-          <Link href="https://wa.me/971525288716" target="_blank" className='w-[50px] h-[50px]'>
-            <img src="/whatsapp-icon-free-png.webp" alt="WhatsApp" className='w-[50px] h-[50px]' />
+        <div className='fixed z-50 bottom-[15%] right-10 sm:bottom-[15%] sm:right-10 md:bottom-[15%] md:right-8 lg:bottom-[15%] lg:right-10'>
+          <Link href="https://wa.me/971525288716" target="_blank" rel="noopener noreferrer" className='block w-10 h-10 sm:w-10 sm:h-10 md:w-10 md:h-10 relative'>
+            <Image 
+              src="/whatsapp-icon-free-png.webp" 
+              alt="WhatsApp" 
+              fill 
+              className='object-contain hover:scale-110 transition-transform duration-200' 
+              sizes="(max-width: 640px) 48px, (max-width: 768px) 56px, 64px"
+            />
           </Link>
         </div>
 
