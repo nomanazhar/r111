@@ -25,12 +25,18 @@ const bookingSchema = z.object({
 
 type BookingFormValues = z.infer<typeof bookingSchema>;
 
-export default function ServiceDetailPage() {
+interface ServiceDetailPageProps {
+  service?: Service;
+  reviews?: Review[];
+}
+
+export default function ServiceDetailPage({ service: initialService, reviews: initialReviews = [] }: ServiceDetailPageProps) {
   const params = useParams();
   const id = Array.isArray(params.id) ? params.id[0] : params.id;
 
-  const [service, setService] = useState<Service | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [service, setService] = useState<Service | null>(initialService || null);
+  const [reviews, setReviews] = useState<Review[]>(initialReviews || []);
+  const [loading, setLoading] = useState(!initialService);
   const [error, setError] = useState<string | null>(null);
   const [showBookingConfirmation, setShowBookingConfirmation] = useState(false);
   const [bookedOrder, setBookedOrder] = useState<Order | null>(null);
@@ -48,27 +54,40 @@ export default function ServiceDetailPage() {
   });
 
   useEffect(() => {
-    async function fetchService() {
+    // Only fetch if we don't have the service data from server props
+    if (service || !id) return;
+
+    const fetchServiceData = async () => {
       try {
-        const res = await fetch(`/api/services?id=${id}`);
-        if (!res.ok) {
-          throw new Error(`Failed to fetch service: ${res.statusText}`);
+        setLoading(true);
+        setError(null);
+        
+        // Fetch service details
+        const response = await fetch(`/api/services/${id}`);
+        if (!response.ok) {
+          throw new Error(`Failed to fetch service: ${response.statusText}`);
         }
-        const data = await res.json();
-        if (data && data.length > 0) {
-          setService(data[0]);
-        } else {
-          setError('Service not found');
+        
+        const serviceData = await response.json();
+        setService(serviceData);
+        
+        // Fetch reviews for this service if service name is available
+        if (serviceData?.name) {
+          const reviewsResponse = await fetch(`/api/reviews?service=${encodeURIComponent(serviceData.name)}`);
+          if (reviewsResponse.ok) {
+            const reviewsData = await reviewsResponse.json();
+            setReviews(reviewsData);
+          }
         }
       } catch (err: any) {
-        setError(err.message || 'An unknown error occurred');
+        console.error('Error fetching service:', err);
+        setError(err.message || 'Failed to load service details. Please try again later.');
       } finally {
         setLoading(false);
       }
-    }
-    if (id) {
-      void fetchService();
-    }
+    };
+
+    void fetchServiceData();
   }, [id]);
 
   const onSubmit = handleSubmit(async (data) => {
